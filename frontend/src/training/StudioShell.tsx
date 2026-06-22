@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-import { Sparkles, Sun, Moon, Settings } from 'lucide-react'
+import { GraduationCap, Sun, Moon, Settings } from 'lucide-react'
 import './theme.css'
 
 export type TrainingView = 'home' | 'image' | 'model3d' | 'video' | 'podcast' | 'chat'
@@ -28,9 +28,9 @@ export default function StudioShell({ active, theme, onToggleTheme, onNavigate, 
       <nav className="tp-nav">
         <div className="tp-brand" onClick={() => onNavigate('home')}>
           <span className="tp-brand-mark">
-            <Sparkles size={17} />
+            <GraduationCap size={17} />
           </span>
-          PolyStudio 实训平台
+          多模态智能体开发 · 实训平台
         </div>
         <div className="tp-nav-links">
           {NAV.map((item) => (

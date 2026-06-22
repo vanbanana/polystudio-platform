@@ -1,82 +1,70 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
+import { AssistantRuntimeProvider } from '@assistant-ui/react'
 import { Mic } from 'lucide-react'
-import { useAgentChat } from './useAgentChat'
-import { AgentActivity, Composer, ExampleChips } from './parts'
+import { useAgentRuntime, type MediaItem } from './agentRuntime'
+import AgentThread from './AgentThread'
 import './studio.css'
 
-const EXAMPLES = [
+const SUGGESTIONS = [
   '生成一段 1 分钟的科技播客开场白，主持人是亲切的女声',
   '做一段双人对话播客：主持人和 AI 专家聊大模型，各自不同音色',
   '用沉稳的男声朗读一段关于咖啡文化的播客脚本',
+  '生成一段轻松的早间播客，配一段舒缓的背景音乐',
 ]
 
 const HINT = '你是一个智能播客助手，请按脚本创作→音色设计→语音合成的流程调用语音工具生成音频。'
 
 export default function PodcastStudio() {
-  const { messages, audios, isLoading, send, stop } = useAgentChat('tp-podcast-studio')
-  const [input, setInput] = useState('')
+  const [audios, setAudios] = useState<MediaItem[]>([])
 
-  const handleSend = () => {
-    if (!input.trim()) return
-    send(input, { systemHint: HINT })
-    setInput('')
-  }
+  const onMedia = useCallback((m: MediaItem) => {
+    if (m.kind !== 'audio') return
+    setAudios((prev) => (prev.some((p) => p.url === m.url) ? prev : [...prev, m]))
+  }, [])
+
+  const runtime = useAgentRuntime({ canvasId: 'tp-podcast-studio', systemHint: HINT, onMedia })
 
   return (
-    <div className="tp-studio">
-      <div className="tp-studio-panel">
-        <div className="tp-studio-head">
-          <div className="tp-studio-title">智能播客 Agent</div>
-          <div className="tp-studio-sub">
-            描述播客主题与音色，Agent 完成脚本创作、音色设计与语音合成。试着指定多个角色的不同音色。
+    <AssistantRuntimeProvider runtime={runtime}>
+      <div className="tp-studio">
+        <div className="tp-studio-panel">
+          <div className="tp-studio-head">
+            <div className="tp-studio-title">智能播客</div>
+            <div className="tp-studio-sub">描述主题与音色，Agent 完成脚本创作、音色设计与语音合成。试着指定多个角色的不同音色。</div>
           </div>
-        </div>
-
-        <div className="tp-card" style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-          <Composer
-            value={input}
-            onChange={setInput}
-            onSend={handleSend}
-            onStop={stop}
-            loading={isLoading}
-            placeholder='例如：生成一段科技播客开场白，主持人是亲切的女声…'
+          <AgentThread
+            placeholder="例如：生成一段科技播客开场白，主持人是亲切的女声…"
+            suggestions={SUGGESTIONS}
+            emptyTitle="描述你的播客"
+            emptyHint="左侧会依次显示脚本生成、音色设计、语音合成等步骤。"
           />
-          <div>
-            <span className="tp-label">示例</span>
-            <ExampleChips items={EXAMPLES} onPick={(v) => setInput(v)} />
-          </div>
         </div>
 
-        <div className="tp-card">
-          <span className="tp-label">Agent 执行过程</span>
-          <AgentActivity messages={messages} emptyHint="发送后这里会显示脚本生成、音色设计、语音合成等步骤。" />
+        <div className="tp-studio-stage">
+          <div className="tp-stage-head">
+            <h3>音频成品</h3>
+            <span>{audios.length} 条</span>
+          </div>
+          {audios.length === 0 ? (
+            <div className="tp-stage-empty">
+              <Mic size={38} strokeWidth={1.4} />
+              <p>还没有音频，在左侧描述播客主题开始生成</p>
+            </div>
+          ) : (
+            <div className="tp-audio-list">
+              {audios
+                .slice()
+                .reverse()
+                .map((a, i) => (
+                  <div key={a.url} className="tp-audio-card">
+                    <div className="meta">片段 {audios.length - i}</div>
+                    <audio src={a.url} controls preload="metadata" />
+                  </div>
+                ))}
+            </div>
+          )}
         </div>
       </div>
-
-      <div className="tp-studio-stage">
-        <div className="tp-stage-head">
-          <h3>音频成品</h3>
-          <span>{audios.length} 条</span>
-        </div>
-        {audios.length === 0 ? (
-          <div className="tp-stage-empty">
-            <Mic size={42} />
-            <p>还没有音频，在左侧描述播客主题开始生成</p>
-          </div>
-        ) : (
-          <div className="tp-audio-list">
-            {audios
-              .slice()
-              .reverse()
-              .map((a, i) => (
-                <div key={a.url} className="tp-audio-card">
-                  <div className="meta">片段 {audios.length - i}</div>
-                  <audio src={a.url} controls preload="metadata" />
-                </div>
-              ))}
-          </div>
-        )}
-      </div>
-    </div>
+    </AssistantRuntimeProvider>
   )
 }
