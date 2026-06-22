@@ -89,6 +89,7 @@ MOCK_MODE=false
 
 - **[交接文档](docs/交接文档.md)** — 当前状态、如何把三套服务跑起来、端口/分支/环境、已知问题、如何接手继续开发。
 - **[开发文档](docs/开发文档.md)** — 细颗粒度：目录结构、后端 Agent/工具、前端实训模块、SSE 协议、mock-api 端点、如何新增能力/新增 mock。
+- **[接口文档](docs/接口文档.md)** — 后端 REST + SSE + WebSocket 全部端点、mock-api 各端点完整请求/响应 JSON 示例、工具返回字段→前端渲染映射。
 - `docs/04-平文/` — 原 PolyStudio 平台文档与 FRAMEWORK 说明。
 - `docs/01-学手/`、`docs/02-项实/`、`docs/05-补资/` — 原课程实训手册与补充资料。
 
