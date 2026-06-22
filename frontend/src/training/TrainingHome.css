@@ -1,0 +1,248 @@
+.tp-home {
+  max-width: 940px;
+  margin: 0 auto;
+  padding: 64px 36px 80px;
+}
+
+/* Hero：左对齐编辑式，无渐变 */
+.tp-hero {
+  border-bottom: 1px solid var(--tp-border);
+  padding-bottom: 44px;
+}
+
+.tp-kicker {
+  font-size: 13px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--tp-primary);
+  font-weight: 600;
+  margin-bottom: 18px;
+}
+
+.tp-hero-title {
+  font-family: var(--tp-serif);
+  font-size: 46px;
+  line-height: 1.18;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  color: var(--tp-text);
+  max-width: 16em;
+}
+
+.tp-hero-desc {
+  margin-top: 22px;
+  font-size: 16px;
+  line-height: 1.85;
+  color: var(--tp-text-soft);
+  max-width: 40em;
+}
+
+.tp-hero-actions {
+  margin-top: 30px;
+  display: flex;
+  gap: 12px;
+}
+
+.tp-hero-stats {
+  margin: 40px 0 0;
+  display: flex;
+  gap: 56px;
+}
+
+.tp-hero-stats div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tp-hero-stats dt {
+  font-family: var(--tp-serif);
+  font-size: 32px;
+  font-weight: 600;
+  color: var(--tp-text);
+}
+
+.tp-hero-stats dd {
+  margin: 0;
+  font-size: 13px;
+  color: var(--tp-text-mut);
+}
+
+/* 章节 */
+.tp-section {
+  margin-top: 56px;
+}
+
+.tp-section-head {
+  margin-bottom: 28px;
+}
+
+.tp-section-head h2 {
+  font-family: var(--tp-serif);
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--tp-text);
+}
+
+.tp-section-head p {
+  margin-top: 8px;
+  font-size: 14.5px;
+  color: var(--tp-text-soft);
+  line-height: 1.7;
+}
+
+/* 为什么这样学：编号文本块，左侧细线，无卡片 */
+.tp-points {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+}
+
+.tp-point {
+  padding-left: 18px;
+  border-left: 2px solid var(--tp-border-strong);
+}
+
+.tp-point-no {
+  font-family: var(--tp-serif);
+  font-size: 15px;
+  color: var(--tp-primary);
+  font-weight: 600;
+}
+
+.tp-point h3 {
+  margin: 10px 0 8px;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--tp-text);
+}
+
+.tp-point p {
+  font-size: 14px;
+  line-height: 1.75;
+  color: var(--tp-text-soft);
+}
+
+/* 实训项目：教学大纲清单，无卡片 */
+.tp-syllabus {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--tp-border);
+}
+
+.tp-syllabus li {
+  border-bottom: 1px solid var(--tp-border);
+}
+
+.tp-row {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 110px 1fr 32px;
+  align-items: start;
+  gap: 20px;
+  padding: 26px 8px;
+  background: transparent;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s ease, padding-left 0.15s ease;
+}
+
+.tp-row:not(.disabled):hover {
+  background: var(--tp-bg-soft);
+  padding-left: 16px;
+}
+
+.tp-row.disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.tp-row-chapter {
+  font-family: var(--tp-serif);
+  font-size: 15px;
+  color: var(--tp-text-mut);
+  padding-top: 2px;
+}
+
+.tp-row-titleline {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--tp-primary);
+}
+
+.tp-row-titleline h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--tp-text);
+}
+
+.tp-row-flag {
+  font-size: 11.5px;
+  color: var(--tp-text-mut);
+  border: 1px solid var(--tp-border-strong);
+  padding: 1px 8px;
+  border-radius: 20px;
+}
+
+.tp-row-desc {
+  margin: 9px 0 12px;
+  font-size: 14px;
+  line-height: 1.75;
+  color: var(--tp-text-soft);
+  max-width: 46em;
+}
+
+.tp-row-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tp-row-tags span {
+  font-size: 12px;
+  color: var(--tp-text-mut);
+  background: var(--tp-surface-2);
+  padding: 3px 10px;
+  border-radius: 6px;
+}
+
+.tp-row-go {
+  display: grid;
+  place-items: center;
+  color: var(--tp-text-mut);
+  padding-top: 4px;
+}
+
+.tp-row:not(.disabled):hover .tp-row-go {
+  color: var(--tp-primary);
+}
+
+/* 页脚 */
+.tp-foot {
+  margin-top: 64px;
+  padding-top: 28px;
+  border-top: 1px solid var(--tp-border);
+  font-size: 13px;
+  color: var(--tp-text-mut);
+  line-height: 1.7;
+}
+
+@media (max-width: 760px) {
+  .tp-hero-title {
+    font-size: 34px;
+  }
+  .tp-points {
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
+  .tp-row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .tp-row-go {
+    display: none;
+  }
+}

@@ -1,0 +1,119 @@
+/* 教学平台设计规范：中性纸感、墨色文字、克制的深绿点缀，编辑式排版，留白充足 */
+
+.tp {
+  /* 浅色：中性单色（无彩调） */
+  --tp-bg: #f7f7f6;
+  --tp-bg-soft: #ffffff;
+  --tp-surface: #ffffff;
+  --tp-surface-2: #efefee;
+  --tp-border: #e6e6e4;
+  --tp-border-strong: #d8d8d5;
+  --tp-text: #1c1c1b;
+  --tp-text-soft: #555553;
+  --tp-text-mut: #8c8c89;
+  --tp-primary: #1c1c1b;
+  --tp-primary-soft: rgba(0, 0, 0, 0.05);
+  --tp-on-primary: #ffffff;
+  --tp-radius: 14px;
+  --tp-radius-sm: 10px;
+  --tp-gap: 24px;
+  --tp-serif: 'Iowan Old Style', 'Palatino Linotype', 'Songti SC', 'STSong', Georgia, 'Times New Roman', serif;
+
+  color: var(--tp-text);
+  background: var(--tp-bg);
+}
+
+[data-theme='dark'] .tp {
+  /* 深色：暖中性近黑（参考 Coze，无彩调） */
+  --tp-bg: #161615;
+  --tp-bg-soft: #201f1e;
+  --tp-surface: #2a2927;
+  --tp-surface-2: #323130;
+  --tp-border: #2c2b2a;
+  --tp-border-strong: #3a3937;
+  --tp-text: #f0efed;
+  --tp-text-soft: #b0afab;
+  --tp-text-mut: #82817c;
+  --tp-primary: #f0efed;
+  --tp-primary-soft: rgba(255, 255, 255, 0.07);
+  --tp-on-primary: #1c1c1b;
+}
+
+.tp,
+.tp * {
+  box-sizing: border-box;
+}
+
+.tp {
+  height: 100vh;
+  overflow-y: auto;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+}
+
+/* 按钮：实色、无渐变 */
+.tp-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 20px;
+  border-radius: 9px;
+  font-size: 14px;
+  font-weight: 600;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: filter 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+}
+
+.tp-btn-primary {
+  background: var(--tp-primary);
+  color: var(--tp-on-primary);
+}
+
+.tp-btn-primary:hover {
+  filter: brightness(1.06);
+}
+
+.tp-btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.tp-btn-ghost {
+  background: transparent;
+  border-color: var(--tp-border-strong);
+  color: var(--tp-text);
+}
+
+.tp-btn-ghost:hover {
+  border-color: var(--tp-primary);
+  color: var(--tp-primary);
+}
+
+/* 表单元素 */
+.tp-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--tp-text-soft);
+  margin-bottom: 10px;
+}
+
+/* 滚动条 */
+.tp ::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+.tp ::-webkit-scrollbar-thumb {
+  background: var(--tp-border-strong);
+  border-radius: 6px;
+}
+.tp ::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.tp-empty {
+  color: var(--tp-text-mut);
+  font-size: 14px;
+  text-align: center;
+}
