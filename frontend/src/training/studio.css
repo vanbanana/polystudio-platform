@@ -165,9 +165,9 @@
 }
 
 .tp-model-thumb.active {
-  border-color: var(--tp-primary);
-  color: var(--tp-primary);
-  background: var(--tp-primary-soft);
+  border-color: var(--tp-border-strong);
+  color: var(--tp-text);
+  background: var(--tp-surface-2);
 }
 
 /* 播客工作台 —— 单集卡片 + 实时频谱 */
@@ -194,8 +194,8 @@
   border-radius: 12px;
   display: grid;
   place-items: center;
-  color: #fff;
-  background: var(--tp-primary);
+  color: var(--tp-text);
+  background: var(--tp-surface-2);
 }
 
 .tp-podcast-body {
@@ -216,8 +216,8 @@
 .tp-podcast-badge {
   flex-shrink: 0;
   font-size: 11.5px;
-  color: var(--tp-primary);
-  background: var(--tp-primary-soft);
+  color: var(--tp-text-soft);
+  background: var(--tp-surface-2);
   padding: 2px 9px;
   border-radius: 20px;
 }
@@ -243,7 +243,7 @@
   border-radius: 50%;
   border: none;
   background: var(--tp-primary);
-  color: #fff;
+  color: var(--tp-on-primary);
   display: grid;
   place-items: center;
   cursor: pointer;
@@ -263,6 +263,7 @@
   min-width: 0;
   height: 48px;
   cursor: pointer;
+  color: var(--tp-text-soft);
 }
 
 .tp-podcast-time {

@@ -50,6 +50,9 @@ export default function PodcastPlayer({ src, title, label }: Props) {
     const w = canvas.width
     const h = canvas.height
     c.clearRect(0, 0, w, h)
+    const rgb = getComputedStyle(canvas).color || 'rgb(176,175,171)'
+    const matched = rgb.match(/\d+/g)
+    const base = matched ? `${matched[0]}, ${matched[1]}, ${matched[2]}` : '176, 175, 171'
     const gap = 3
     const bw = (w - (BARS - 1) * gap) / BARS
     const graph = graphRef.current
@@ -71,7 +74,7 @@ export default function PodcastPlayer({ src, title, label }: Props) {
       const x = i * (bw + gap)
       const y = (h - bh) / 2
       const played = i / BARS <= prog
-      c.fillStyle = played ? 'rgba(31,107,74,0.95)' : 'rgba(31,107,74,0.2)'
+      c.fillStyle = played ? `rgba(${base}, 0.95)` : `rgba(${base}, 0.22)`
       const r = Math.min(bw / 2, 2)
       c.beginPath()
       c.roundRect(x, y, bw, bh, r)

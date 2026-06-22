@@ -1,21 +1,21 @@
 /* 教学平台设计规范：中性纸感、墨色文字、克制的深绿点缀，编辑式排版，留白充足 */
 
 .tp {
-  /* 浅色（默认观感：纸感教学页） */
-  --tp-bg: #fbfaf7;
-  --tp-bg-soft: #f4f2ec;
+  /* 浅色：中性单色（无彩调） */
+  --tp-bg: #f7f7f6;
+  --tp-bg-soft: #ffffff;
   --tp-surface: #ffffff;
-  --tp-surface-2: #f4f2ec;
-  --tp-border: #e3e0d7;
-  --tp-border-strong: #d3cfc3;
-  --tp-text: #20201d;
-  --tp-text-soft: #54524b;
-  --tp-text-mut: #8d8a7f;
-  --tp-primary: #1f6b4a;
-  --tp-primary-soft: rgba(31, 107, 74, 0.09);
-  --tp-success: #1f6b4a;
-  --tp-radius: 12px;
-  --tp-radius-sm: 8px;
+  --tp-surface-2: #efefee;
+  --tp-border: #e6e6e4;
+  --tp-border-strong: #d8d8d5;
+  --tp-text: #1c1c1b;
+  --tp-text-soft: #555553;
+  --tp-text-mut: #8c8c89;
+  --tp-primary: #1c1c1b;
+  --tp-primary-soft: rgba(0, 0, 0, 0.05);
+  --tp-on-primary: #ffffff;
+  --tp-radius: 14px;
+  --tp-radius-sm: 10px;
   --tp-gap: 24px;
   --tp-serif: 'Iowan Old Style', 'Palatino Linotype', 'Songti SC', 'STSong', Georgia, 'Times New Roman', serif;
 
@@ -24,18 +24,19 @@
 }
 
 [data-theme='dark'] .tp {
-  --tp-bg: #161714;
-  --tp-bg-soft: #1c1d19;
-  --tp-surface: #1d1f1a;
-  --tp-surface-2: #232520;
-  --tp-border: #32342d;
-  --tp-border-strong: #41443a;
-  --tp-text: #ecebe4;
-  --tp-text-soft: #b4b3a8;
-  --tp-text-mut: #807e72;
-  --tp-primary: #5aa982;
-  --tp-primary-soft: rgba(90, 169, 130, 0.14);
-  --tp-success: #5aa982;
+  /* 深色：暖中性近黑（参考 Coze，无彩调） */
+  --tp-bg: #161615;
+  --tp-bg-soft: #201f1e;
+  --tp-surface: #2a2927;
+  --tp-surface-2: #323130;
+  --tp-border: #2c2b2a;
+  --tp-border-strong: #3a3937;
+  --tp-text: #f0efed;
+  --tp-text-soft: #b0afab;
+  --tp-text-mut: #82817c;
+  --tp-primary: #f0efed;
+  --tp-primary-soft: rgba(255, 255, 255, 0.07);
+  --tp-on-primary: #1c1c1b;
 }
 
 .tp,
@@ -66,7 +67,7 @@
 
 .tp-btn-primary {
   background: var(--tp-primary);
-  color: #fff;
+  color: var(--tp-on-primary);
 }
 
 .tp-btn-primary:hover {

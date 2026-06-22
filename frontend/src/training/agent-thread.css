@@ -82,7 +82,7 @@
 
 .at-msg-user .at-bubble {
   background: var(--tp-primary);
-  color: #fff;
+  color: var(--tp-on-primary);
   padding: 10px 14px;
   border-radius: 12px 12px 2px 12px;
   font-size: 14px;
@@ -180,8 +180,8 @@
 }
 
 .at-tool-icon.done {
-  color: #fff;
-  background: var(--tp-primary);
+  color: var(--tp-text);
+  background: var(--tp-surface-2);
 }
 
 .at-tool-name {
@@ -263,7 +263,7 @@
 }
 
 .at-model svg {
-  color: var(--tp-primary);
+  color: var(--tp-text-soft);
 }
 
 .at-composer-hint {
@@ -280,7 +280,7 @@
   border-radius: 50%;
   border: none;
   background: var(--tp-primary);
-  color: #fff;
+  color: var(--tp-on-primary);
   cursor: pointer;
   flex-shrink: 0;
   transition: filter 0.15s ease, opacity 0.15s ease, transform 0.1s ease;
