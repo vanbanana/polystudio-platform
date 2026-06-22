@@ -1,0 +1,134 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv
+*.egg-info/
+dist/
+build/
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+dist/
+dist-ssr/
+*.local
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Storage (运行时数据，不应提交到仓库)
+backend/storage/
+backend/workspace/
+backend/.env
+
+# ===== 新增：大文件 / 外部部署 =====
+# ComfyUI Portable（不提交，几 GB）
+ComfyUI-Deploy/
+**/ComfyUI_windows_portable/
+
+# MuseTalk 主项目
+MuseTalk/
+E:/MuseTalk/
+
+# 模型权重（几十 GB 起步）
+models/
+checkpoints/
+*.safetensors
+*.pt
+*.pth
+*.bin
+*.onnx
+*.ckpt
+
+# 生成的媒体文件
+*.wav
+*.mp3
+*.mp4
+*.avi
+*.mov
+*.webm
+*.gif
+backend/storage/**/*.png
+backend/storage/**/*.jpg
+backend/storage/**/*.jpeg
+backend/storage/**/*.gif
+backend/storage/**/*.mp4
+backend/storage/**/*.wav
+
+# Conda 环境（E 盘）
+E:/conda_envs/
+
+# Conda 特定
+.conda/
+*.conda
+
+# 用户级 Python
+C:/Users/20304/AppData/Roaming/Python/
+
+# C 盘临时
+C:/Users/20304/AppData/Local/Temp/
+
+# 前端构建产物
+frontend/.vite/
+frontend/build/
+frontend/frontend.out.log
+frontend/frontend.err.log
+
+# 桌面操作系统
+desktop.ini
+$RECYCLE.BIN/
+
+# PyTorch
+*.tar
+*.tar.gz
+
+# 备份文件
+*.bak
+*.tmp
+*.orig
+
+
+
+
+
+
+
+
+polystudio-client/
+venv/
+backend/venv/
+backend/storage/
+backend/workspace/
+backend/.env
+backend/logs/
+backend/frontend.out.log
+backend/frontend.err.log
+backend/backend.out.log
+backend/backend.err.log
+
