@@ -1,10 +1,7 @@
 import { ArrowRight, ImageIcon, Boxes, Film, Mic, MessageSquare, Bot } from 'lucide-react'
-import { TrainingView } from './StudioShell'
+import { type TrainingView, useNav } from './nav'
+import CourseSidebar from './CourseSidebar'
 import './TrainingHome.css'
-
-type Props = {
-  onEnter: (view: TrainingView) => void
-}
 
 const PROJECTS: {
   view: TrainingView | null
@@ -77,9 +74,13 @@ const POINTS = [
   { no: '03', title: '能落地', desc: '覆盖云 API 接入与开源模型私有化部署，对接真实多模态 Agent 开发岗位。' },
 ]
 
-export default function TrainingHome({ onEnter }: Props) {
+export default function TrainingHome() {
+  const { navigate: onEnter } = useNav()
   return (
-    <div className="tp-home">
+    <div className="cz-app">
+      <CourseSidebar />
+      <div className="cz-home">
+        <div className="tp-home">
       <header className="tp-hero">
         <div className="tp-kicker">企业级实训课程</div>
         <h1 className="tp-hero-title">多模态智能体开发实训平台</h1>
@@ -165,9 +166,11 @@ export default function TrainingHome({ onEnter }: Props) {
         </ol>
       </section>
 
-      <footer className="tp-foot">
-        多模态智能体开发实训平台 · 共用同一个全能多模态 Agent 内核，按能力拆分为独立教学工作台
-      </footer>
+          <footer className="tp-foot">
+            多模态智能体开发实训平台 · 共用同一个全能多模态 Agent 内核，按能力拆分为独立教学工作台
+          </footer>
+        </div>
+      </div>
     </div>
   )
 }

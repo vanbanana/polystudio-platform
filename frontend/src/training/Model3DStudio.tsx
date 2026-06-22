@@ -3,6 +3,8 @@ import { AssistantRuntimeProvider } from '@assistant-ui/react'
 import { Boxes } from 'lucide-react'
 import Model3DViewer from '../components/Model3DViewer'
 import { useAgentRuntime, type ModelItem } from './agentRuntime'
+import { useThreadScoped } from './threadScope'
+import StudioLayout from './StudioLayout'
 import AgentThread from './AgentThread'
 import './studio.css'
 
@@ -14,14 +16,18 @@ const SUGGESTIONS = [
 ]
 
 const HINT = '你是一个 3D 资产生成助手，请根据用户描述调用 3D 模型生成工具生成可预览的模型。'
+const keyOfModel = (m: ModelItem) => m.modelUrl
 
 export default function Model3DStudio() {
-  const [models, setModels] = useState<ModelItem[]>([])
+  const { items: models, add, setActive } = useThreadScoped<ModelItem>(keyOfModel)
   const [activeIdx, setActiveIdx] = useState(0)
 
-  const onModel = useCallback((m: ModelItem) => {
-    setModels((prev) => (prev.some((p) => p.modelUrl === m.modelUrl) ? prev : [...prev, m]))
-  }, [])
+  const onModel = useCallback(
+    (m: ModelItem) => {
+      add(m)
+    },
+    [add],
+  )
 
   const runtime = useAgentRuntime({ canvasId: 'tp-model3d-studio', systemHint: HINT, onModel })
 
@@ -31,60 +37,65 @@ export default function Model3DStudio() {
 
   const active = models[activeIdx]
 
+  const stage = (
+    <>
+      <div className="cz-preview-head">
+        <h3>3D 预览</h3>
+        <span className="count">{models.length} 个模型</span>
+      </div>
+      <div className="cz-preview-body">
+        {!active ? (
+          <div className="tp-stage-empty">
+            <Boxes size={38} strokeWidth={1.4} />
+            <p>还没有模型，在左侧对话里描述并生成</p>
+          </div>
+        ) : (
+          <>
+            <div className="tp-model-stage">
+              <Model3DViewer
+                key={active.modelUrl}
+                modelUrl={active.modelUrl}
+                format={active.format}
+                mtlUrl={active.mtlUrl}
+                textureUrl={active.textureUrl}
+              />
+            </div>
+            {models.length > 1 && (
+              <div className="tp-model-thumbs">
+                {models.map((m, i) => (
+                  <button
+                    key={m.modelUrl}
+                    className={`tp-model-thumb ${i === activeIdx ? 'active' : ''}`}
+                    onClick={() => setActiveIdx(i)}
+                  >
+                    模型 {i + 1} · {m.format.toUpperCase()}
+                  </button>
+                ))}
+              </div>
+            )}
+          </>
+        )}
+      </div>
+    </>
+  )
+
   return (
     <AssistantRuntimeProvider runtime={runtime}>
-      <div className="tp-studio">
-        <div className="tp-studio-panel">
-          <div className="tp-studio-head">
-            <div className="tp-studio-title">3D 资产生成</div>
-            <div className="tp-studio-sub">文本驱动生成 3D 模型，右侧可拖拽旋转预览，支持 OBJ / GLB 在线查看。</div>
-          </div>
-          <AgentThread
-            placeholder="描述你想要的 3D 模型，例如：一只低多边形小狐狸…"
-            suggestions={SUGGESTIONS}
-            emptyTitle="描述你的模型"
-            emptyHint="3D 生成通常需要数十秒，左侧会显示 Agent 的工具执行过程。"
-          />
-        </div>
-
-        <div className="tp-studio-stage">
-          <div className="tp-stage-head">
-            <h3>3D 预览</h3>
-            <span>{models.length} 个模型</span>
-          </div>
-          {!active ? (
-            <div className="tp-stage-empty">
-              <Boxes size={38} strokeWidth={1.4} />
-              <p>还没有模型，在左侧描述并生成</p>
-            </div>
-          ) : (
-            <>
-              <div className="tp-model-stage">
-                <Model3DViewer
-                  key={active.modelUrl}
-                  modelUrl={active.modelUrl}
-                  format={active.format}
-                  mtlUrl={active.mtlUrl}
-                  textureUrl={active.textureUrl}
-                />
-              </div>
-              {models.length > 1 && (
-                <div className="tp-model-thumbs">
-                  {models.map((m, i) => (
-                    <button
-                      key={m.modelUrl}
-                      className={`tp-model-thumb ${i === activeIdx ? 'active' : ''}`}
-                      onClick={() => setActiveIdx(i)}
-                    >
-                      模型 {i + 1} · {m.format.toUpperCase()}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </>
-          )}
-        </div>
-      </div>
+      <StudioLayout
+        onThread={setActive}
+        chatTitle="3D 资产 Agent"
+        chatSub="文本 / 图片驱动生成 3D 模型，右侧可拖拽预览"
+        chatIcon={<Boxes size={17} />}
+        preview={stage}
+      >
+        <AgentThread
+          placeholder="描述你想要的 3D 模型，例如：一只低多边形小狐狸…"
+          suggestions={SUGGESTIONS}
+          emptyTitle="描述你的模型"
+          emptyHint="3D 生成通常需要数十秒，左侧会显示 Agent 的工具执行过程。"
+          modelLabel="3D 生成 · Agent"
+        />
+      </StudioLayout>
     </AssistantRuntimeProvider>
   )
 }

@@ -207,21 +207,23 @@
   word-break: break-all;
 }
 
-/* 输入框 */
+/* 输入框 —— 圆角大输入框，底部模型标签 + 圆形发送 */
 .at-composer {
-  margin-top: 14px;
-  border: 1px solid var(--tp-border);
-  border-radius: var(--tp-radius);
+  margin-top: 16px;
+  border: 1px solid var(--tp-border-strong);
+  border-radius: 20px;
   background: var(--tp-surface);
-  padding: 12px 14px;
+  padding: 16px 18px 12px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  transition: border-color 0.15s ease;
+  gap: 10px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 0 1px 2px rgba(20, 20, 16, 0.03);
 }
 
 .at-composer:focus-within {
   border-color: var(--tp-primary);
+  box-shadow: 0 0 0 3px var(--tp-primary-soft);
 }
 
 .at-input {
@@ -231,10 +233,11 @@
   resize: none;
   background: transparent;
   color: var(--tp-text);
-  font-size: 14px;
-  line-height: 1.65;
+  font-size: 15px;
+  line-height: 1.6;
   font-family: inherit;
-  max-height: 200px;
+  min-height: 26px;
+  max-height: 220px;
 }
 
 .at-input::placeholder {
@@ -244,45 +247,67 @@
 .at-composer-bar {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 10px;
+}
+
+.at-model {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12.5px;
+  color: var(--tp-text-soft);
+  background: var(--tp-surface-2);
+  border: 1px solid var(--tp-border);
+  padding: 4px 10px;
+  border-radius: 16px;
+}
+
+.at-model svg {
+  color: var(--tp-primary);
 }
 
 .at-composer-hint {
   font-size: 12px;
   color: var(--tp-text-mut);
+  margin-left: auto;
 }
 
 .at-send {
   display: grid;
   place-items: center;
-  width: 34px;
-  height: 34px;
-  border-radius: 9px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
   border: none;
   background: var(--tp-primary);
   color: #fff;
   cursor: pointer;
-  transition: filter 0.15s ease, opacity 0.15s ease;
+  flex-shrink: 0;
+  transition: filter 0.15s ease, opacity 0.15s ease, transform 0.1s ease;
 }
 
 .at-send:hover {
-  filter: brightness(1.06);
+  filter: brightness(1.08);
+}
+
+.at-send:active {
+  transform: scale(0.94);
 }
 
 .at-send:disabled {
-  opacity: 0.4;
+  opacity: 0.32;
   cursor: not-allowed;
 }
 
 .at-cancel {
-  background: var(--tp-text-mut);
+  background: var(--tp-text);
 }
 
 /* 居中的全屏对话（Qwen3） */
 .at-root.centered {
-  max-width: 760px;
+  max-width: 768px;
   margin: 0 auto;
   width: 100%;
-  height: calc(100vh - 64px);
-  padding: 12px 20px 22px;
+  height: 100%;
+  padding: 18px 24px 24px;
 }

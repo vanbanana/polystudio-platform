@@ -1,8 +1,11 @@
-import { useCallback, useState } from 'react'
+import { useCallback } from 'react'
 import { AssistantRuntimeProvider } from '@assistant-ui/react'
 import { Mic } from 'lucide-react'
 import { useAgentRuntime, type MediaItem } from './agentRuntime'
+import { useThreadScoped } from './threadScope'
+import StudioLayout from './StudioLayout'
 import AgentThread from './AgentThread'
+import PodcastPlayer from './PodcastPlayer'
 import './studio.css'
 
 const SUGGESTIONS = [
@@ -13,58 +16,64 @@ const SUGGESTIONS = [
 ]
 
 const HINT = '你是一个智能播客助手，请按脚本创作→音色设计→语音合成的流程调用语音工具生成音频。'
+const keyOfMedia = (m: MediaItem) => m.url
 
 export default function PodcastStudio() {
-  const [audios, setAudios] = useState<MediaItem[]>([])
+  const { items: audios, add, setActive } = useThreadScoped<MediaItem>(keyOfMedia)
 
-  const onMedia = useCallback((m: MediaItem) => {
-    if (m.kind !== 'audio') return
-    setAudios((prev) => (prev.some((p) => p.url === m.url) ? prev : [...prev, m]))
-  }, [])
+  const onMedia = useCallback(
+    (m: MediaItem) => {
+      if (m.kind !== 'audio') return
+      add(m)
+    },
+    [add],
+  )
 
   const runtime = useAgentRuntime({ canvasId: 'tp-podcast-studio', systemHint: HINT, onMedia })
 
+  const stage = (
+    <>
+      <div className="cz-preview-head">
+        <h3>播客单集</h3>
+        <span className="count">{audios.length} 集</span>
+      </div>
+      <div className="cz-preview-body">
+        {audios.length === 0 ? (
+          <div className="tp-stage-empty">
+            <Mic size={38} strokeWidth={1.4} />
+            <p>还没有音频，在左侧对话里描述播客主题开始生成</p>
+          </div>
+        ) : (
+          <div className="tp-audio-list">
+            {audios
+              .slice()
+              .reverse()
+              .map((a, i) => (
+                <PodcastPlayer key={a.url} src={a.url} title={a.prompt} label={`第 ${audios.length - i} 集`} />
+              ))}
+          </div>
+        )}
+      </div>
+    </>
+  )
+
   return (
     <AssistantRuntimeProvider runtime={runtime}>
-      <div className="tp-studio">
-        <div className="tp-studio-panel">
-          <div className="tp-studio-head">
-            <div className="tp-studio-title">智能播客</div>
-            <div className="tp-studio-sub">描述主题与音色，Agent 完成脚本创作、音色设计与语音合成。试着指定多个角色的不同音色。</div>
-          </div>
-          <AgentThread
-            placeholder="例如：生成一段科技播客开场白，主持人是亲切的女声…"
-            suggestions={SUGGESTIONS}
-            emptyTitle="描述你的播客"
-            emptyHint="左侧会依次显示脚本生成、音色设计、语音合成等步骤。"
-          />
-        </div>
-
-        <div className="tp-studio-stage">
-          <div className="tp-stage-head">
-            <h3>音频成品</h3>
-            <span>{audios.length} 条</span>
-          </div>
-          {audios.length === 0 ? (
-            <div className="tp-stage-empty">
-              <Mic size={38} strokeWidth={1.4} />
-              <p>还没有音频，在左侧描述播客主题开始生成</p>
-            </div>
-          ) : (
-            <div className="tp-audio-list">
-              {audios
-                .slice()
-                .reverse()
-                .map((a, i) => (
-                  <div key={a.url} className="tp-audio-card">
-                    <div className="meta">片段 {audios.length - i}</div>
-                    <audio src={a.url} controls preload="metadata" />
-                  </div>
-                ))}
-            </div>
-          )}
-        </div>
-      </div>
+      <StudioLayout
+        onThread={setActive}
+        chatTitle="播客 Agent"
+        chatSub="脚本创作 → 音色设计 → 语音合成"
+        chatIcon={<Mic size={17} />}
+        preview={stage}
+      >
+        <AgentThread
+          placeholder="例如：生成一段科技播客开场白，主持人是亲切的女声…"
+          suggestions={SUGGESTIONS}
+          emptyTitle="描述你的播客"
+          emptyHint="左侧会依次显示脚本生成、音色设计、语音合成等步骤。"
+          modelLabel="语音合成 · Agent"
+        />
+      </StudioLayout>
     </AssistantRuntimeProvider>
   )
 }

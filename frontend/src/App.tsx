@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react'
 import ChatInterface from './components/ChatInterface'
 import SettingsPage from './components/SettingsPage'
-import StudioShell, { TrainingView } from './training/StudioShell'
+import { NavProvider, type TrainingView } from './training/nav'
 import TrainingHome from './training/TrainingHome'
 import ImageStudio from './training/ImageStudio'
 import Model3DStudio from './training/Model3DStudio'
 import VideoStudio from './training/VideoStudio'
 import PodcastStudio from './training/PodcastStudio'
 import ChatStudio from './training/ChatStudio'
+import './training/theme.css'
+import './training/coze.css'
 import './App.css'
 
 type ThemeMode = 'dark' | 'light'
@@ -110,21 +112,25 @@ function App() {
       case 'chat':
         return <ChatStudio />
       default:
-        return <TrainingHome onEnter={navigateView} />
+        return <TrainingHome />
     }
   }
 
   return (
     <div className="app">
-      <StudioShell
-        active={activeView}
-        theme={theme}
-        onToggleTheme={toggleTheme}
-        onNavigate={navigateView}
-        onOpenSettings={openSettings}
-      >
-        {renderStudio()}
-      </StudioShell>
+      <div className="tp">
+        <NavProvider
+          value={{
+            active: activeView,
+            theme,
+            navigate: navigateView,
+            toggleTheme,
+            openSettings,
+          }}
+        >
+          {renderStudio()}
+        </NavProvider>
+      </div>
     </div>
   )
 }

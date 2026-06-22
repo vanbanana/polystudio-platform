@@ -1,21 +1,4 @@
 /* 工作台舞台区通用样式 */
-.tp-stage-head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  margin-bottom: 20px;
-}
-
-.tp-stage-head h3 {
-  font-size: 18px;
-  font-weight: 700;
-}
-
-.tp-stage-head span {
-  font-size: 13px;
-  color: var(--tp-text-mut);
-}
-
 .tp-stage-empty {
   display: flex;
   flex-direction: column;
@@ -38,6 +21,7 @@
 }
 
 .tp-gallery-item {
+  position: relative;
   margin: 0;
   border-radius: var(--tp-radius-sm);
   overflow: hidden;
@@ -46,6 +30,28 @@
   cursor: zoom-in;
   aspect-ratio: 1 / 1;
   transition: transform 0.15s ease;
+}
+
+.tp-gallery-item figcaption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 16px 10px 8px;
+  font-size: 11.5px;
+  line-height: 1.4;
+  color: #fff;
+  background: linear-gradient(transparent, rgba(10, 12, 8, 0.72));
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.tp-gallery-item:hover figcaption {
+  opacity: 1;
 }
 
 .tp-gallery-item:hover {
@@ -123,6 +129,15 @@
   background: #000;
 }
 
+.tp-video-cap {
+  padding: 9px 12px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--tp-text-soft);
+  background: var(--tp-surface);
+  border-top: 1px solid var(--tp-border);
+}
+
 /* 3D 预览舞台 */
 .tp-model-stage {
   height: 62vh;
@@ -155,36 +170,106 @@
   background: var(--tp-primary-soft);
 }
 
-/* 播客工作台 */
+/* 播客工作台 —— 单集卡片 + 实时频谱 */
 .tp-audio-list {
   display: flex;
   flex-direction: column;
   gap: 14px;
 }
 
-.tp-audio-card {
+.tp-podcast {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
+  align-items: center;
+  gap: 16px;
   padding: 16px 18px;
-  border-radius: var(--tp-radius-sm);
+  border-radius: 14px;
   border: 1px solid var(--tp-border);
   background: var(--tp-surface);
 }
 
-.tp-audio-card .meta {
-  font-size: 13px;
-  color: var(--tp-text-soft);
+.tp-podcast-cover {
+  flex-shrink: 0;
+  width: 54px;
+  height: 54px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  background: var(--tp-primary);
 }
 
-.tp-audio-card audio {
-  width: 100%;
-}
-
-/* 工作台左栏让对话线程填满剩余高度 */
-.tp-studio-panel .at-root {
+.tp-podcast-body {
   flex: 1;
-  min-height: 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tp-podcast-meta {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+}
+
+.tp-podcast-badge {
+  flex-shrink: 0;
+  font-size: 11.5px;
+  color: var(--tp-primary);
+  background: var(--tp-primary-soft);
+  padding: 2px 9px;
+  border-radius: 20px;
+}
+
+.tp-podcast-title {
+  font-size: 13.5px;
+  color: var(--tp-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tp-podcast-controls {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.tp-podcast-play {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: var(--tp-primary);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: filter 0.15s ease, transform 0.1s ease;
+}
+
+.tp-podcast-play:hover {
+  filter: brightness(1.08);
+}
+
+.tp-podcast-play:active {
+  transform: scale(0.94);
+}
+
+.tp-podcast-wave {
+  flex: 1;
+  min-width: 0;
+  height: 48px;
+  cursor: pointer;
+}
+
+.tp-podcast-time {
+  flex-shrink: 0;
+  font-size: 12px;
+  color: var(--tp-text-mut);
+  font-variant-numeric: tabular-nums;
 }
 
 /* 图片缩略上传/参考预览 */

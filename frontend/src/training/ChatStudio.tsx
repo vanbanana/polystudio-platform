@@ -1,5 +1,7 @@
 import { AssistantRuntimeProvider } from '@assistant-ui/react'
+import { MessageSquare } from 'lucide-react'
 import { useAgentRuntime } from './agentRuntime'
+import StudioLayout from './StudioLayout'
 import AgentThread from './AgentThread'
 import './studio.css'
 
@@ -15,13 +17,16 @@ export default function ChatStudio() {
 
   return (
     <AssistantRuntimeProvider runtime={runtime}>
-      <AgentThread
-        centered
-        placeholder="给 Qwen3 发消息…"
-        suggestions={SUGGESTIONS}
-        emptyTitle="Qwen3 对话"
-        emptyHint="模仿在线 AI 网站的对话界面，背后是同一套全能 Agent。本地化部署后可把云端模型替换为本地 Qwen3。"
-      />
+      <StudioLayout chatTitle="Qwen3 Agent" chatSub="本地化全模态对话" chatIcon={<MessageSquare size={17} />}>
+        <AgentThread
+          centered
+          placeholder="给 Qwen3 发消息…"
+          suggestions={SUGGESTIONS}
+          emptyTitle="Qwen3 对话"
+          emptyHint="模仿在线 AI 网站的对话界面，背后是同一套全能 Agent。本地化部署后可把云端模型替换为本地 Qwen3。"
+          modelLabel="Qwen3 · 本地化"
+        />
+      </StudioLayout>
     </AssistantRuntimeProvider>
   )
 }

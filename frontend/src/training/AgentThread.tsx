@@ -2,7 +2,7 @@ import { FC } from 'react'
 import ReactMarkdown from 'react-markdown'
 import { ThreadPrimitive, ComposerPrimitive, MessagePrimitive } from '@assistant-ui/react'
 import type { TextMessagePartComponent, ToolCallMessagePartComponent, ReasoningMessagePartComponent } from '@assistant-ui/react'
-import { ArrowUp, Square, Brain, Wrench, Check } from 'lucide-react'
+import { ArrowUp, Square, Brain, Wrench, Check, Sparkle } from 'lucide-react'
 import './agent-thread.css'
 
 const TOOL_LABELS: Record<string, string> = {
@@ -74,9 +74,10 @@ type Props = {
   emptyTitle?: string
   emptyHint?: string
   centered?: boolean
+  modelLabel?: string
 }
 
-export default function AgentThread({ placeholder, suggestions = [], emptyTitle, emptyHint, centered }: Props) {
+export default function AgentThread({ placeholder, suggestions = [], emptyTitle, emptyHint, centered, modelLabel = '全能 Agent' }: Props) {
   return (
     <ThreadPrimitive.Root className={`at-root ${centered ? 'centered' : ''}`}>
       <ThreadPrimitive.Viewport className="at-viewport">
@@ -102,17 +103,26 @@ export default function AgentThread({ placeholder, suggestions = [], emptyTitle,
       </ThreadPrimitive.Viewport>
 
       <ComposerPrimitive.Root className="at-composer">
-        <ComposerPrimitive.Input className="at-input" placeholder={placeholder || '描述你的需求，Agent 会自动调用工具…'} rows={3} />
+        <ComposerPrimitive.Input
+          className="at-input"
+          placeholder={placeholder || '描述你的需求，Agent 会自动调用工具…'}
+          rows={1}
+          autoFocus
+        />
         <div className="at-composer-bar">
+          <span className="at-model">
+            <Sparkle size={13} />
+            {modelLabel}
+          </span>
           <span className="at-composer-hint">Enter 发送 · Shift+Enter 换行</span>
           <ThreadPrimitive.If running={false}>
-            <ComposerPrimitive.Send className="at-send">
-              <ArrowUp size={17} />
+            <ComposerPrimitive.Send className="at-send" aria-label="发送">
+              <ArrowUp size={18} />
             </ComposerPrimitive.Send>
           </ThreadPrimitive.If>
           <ThreadPrimitive.If running>
-            <ComposerPrimitive.Cancel className="at-send at-cancel">
-              <Square size={15} />
+            <ComposerPrimitive.Cancel className="at-send at-cancel" aria-label="停止">
+              <Square size={15} fill="currentColor" />
             </ComposerPrimitive.Cancel>
           </ThreadPrimitive.If>
         </div>
