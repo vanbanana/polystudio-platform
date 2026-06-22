@@ -1,3 +1,8 @@
+> 🗄️ **历史归档 · 非当前实现**：本文件描述的是**改造为实训平台之前**的原始 PolyStudio，**可能与当前代码不一致**。
+> 当前平台的权威文档见 [`docs/00-平台文档/`](../../00-平台文档/)（开发/接口/交接），分类总览见 [`docs/README.md`](../../README.md)。
+
+---
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
