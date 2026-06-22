@@ -1,0 +1,3 @@
+openai>=1.0.0
+gradio>=5.45.0
+python-dotenv>=1.1.0
