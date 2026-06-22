@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-import { GraduationCap, Home, Settings, Sun, Moon } from 'lucide-react'
+import { Home, Settings, Sun, Moon } from 'lucide-react'
 import { AGENTS, useNav } from './nav'
 
 // 左侧 agent 切换栏。history：当前 agent 的会话记录（由具体 studio 注入）。
@@ -8,16 +8,6 @@ export default function CourseSidebar({ history }: { history?: ReactNode }) {
 
   return (
     <aside className="cz-sidebar">
-      <div className="cz-side-brand" onClick={() => navigate('home')}>
-        <span className="cz-side-logo">
-          <GraduationCap size={18} />
-        </span>
-        <div className="cz-side-brand-text">
-          <strong>多模态智能体</strong>
-          <span>实训平台</span>
-        </div>
-      </div>
-
       <div className="cz-side-label">智能体</div>
       <div className="cz-agents">
         {AGENTS.map((a) => {
