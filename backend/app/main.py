@@ -18,12 +18,12 @@ from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pathlib import Path
-from app.routers import chat, settings
+from app.routers import chat, settings, conversations
 import os
 from dotenv import load_dotenv
 from app.utils.logger import setup_logging
 from app.services.connection_manager import manager
-from app.services import workspace_service
+from app.services import workspace_service, conversation_store
 
 load_dotenv()
 
@@ -57,6 +57,9 @@ AUDIOS_DIR.mkdir(parents=True, exist_ok=True)
 # 确保工作空间默认文件存在
 workspace_service.ensure_workspace_defaults()
 
+# 初始化 SQLite 会话/消息持久化
+conversation_store.init_db()
+
 # 配置静态文件服务 - 用于访问保存的图片
 # 这样前端可以通过 /storage/images/文件名 访问图片
 if STORAGE_DIR.exists():
@@ -65,6 +68,7 @@ if STORAGE_DIR.exists():
 # 注册路由
 app.include_router(chat.router, prefix="/api", tags=["chat"])
 app.include_router(settings.router, prefix="/api", tags=["settings"])
+app.include_router(conversations.router, prefix="/api", tags=["conversations"])
 
 
 @app.websocket("/ws/{canvas_id}")

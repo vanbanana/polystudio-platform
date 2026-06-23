@@ -1,6 +1,12 @@
-import { useMemo, useRef } from 'react'
-import { useLocalRuntime, type ChatModelAdapter, type ChatModelRunResult } from '@assistant-ui/react'
+import { useMemo, useRef, type MutableRefObject } from 'react'
+import {
+  useLocalRuntime,
+  useRemoteThreadListRuntime,
+  type ChatModelAdapter,
+  type ChatModelRunResult,
+} from '@assistant-ui/react'
 import { apiUrl } from './api'
+import { useBackendThreadListAdapter } from './threadPersistence'
 
 // 用 assistant-ui 的本地 runtime 桥接到现有后端的全能 Agent（POST /api/chat，SSE）。
 // 对话/工具调用/思考链/输入框等 UI 全部交给 assistant-ui，这里只负责协议转换与媒体收集。
@@ -45,10 +51,7 @@ function textOf(message: { content: readonly AnyPart[] }): string {
     .join('')
 }
 
-export function useAgentRuntime(options: AgentRuntimeOptions) {
-  const optsRef = useRef(options)
-  optsRef.current = options
-
+function useAgentLocalRuntime(optsRef: MutableRefObject<AgentRuntimeOptions>) {
   const adapter = useMemo<ChatModelAdapter>(
     () => ({
       async *run({ messages, abortSignal }) {
@@ -200,4 +203,18 @@ export function useAgentRuntime(options: AgentRuntimeOptions) {
   )
 
   return useLocalRuntime(adapter)
+}
+
+// 会话列表 + 每会话消息历史走后端 SQLite 持久化，刷新后不丢失。
+export function useAgentRuntime(options: AgentRuntimeOptions) {
+  const optsRef = useRef(options)
+  optsRef.current = options
+
+  // 每个工作台用各自的 canvasId 作为 agent 标识，会话列表互相隔离。
+  const adapter = useBackendThreadListAdapter(options.canvasId || 'default')
+
+  return useRemoteThreadListRuntime({
+    runtimeHook: () => useAgentLocalRuntime(optsRef),
+    adapter,
+  })
 }
