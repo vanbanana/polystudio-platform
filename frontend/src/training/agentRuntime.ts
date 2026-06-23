@@ -1,5 +1,6 @@
 import { useMemo, useRef } from 'react'
 import { useLocalRuntime, type ChatModelAdapter, type ChatModelRunResult } from '@assistant-ui/react'
+import { apiUrl } from './api'
 
 // 用 assistant-ui 的本地 runtime 桥接到现有后端的全能 Agent（POST /api/chat，SSE）。
 // 对话/工具调用/思考链/输入框等 UI 全部交给 assistant-ui，这里只负责协议转换与媒体收集。
@@ -74,7 +75,7 @@ export function useAgentRuntime(options: AgentRuntimeOptions) {
         const userText = lastMessage ? textOf(lastMessage) : ''
         const messageToSend = opts.systemHint ? `${opts.systemHint}\n\n${userText}` : userText
 
-        const response = await fetch('/api/chat', {
+        const response = await fetch(apiUrl('/api/chat'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', Accept: 'text/event-stream' },
           body: JSON.stringify({

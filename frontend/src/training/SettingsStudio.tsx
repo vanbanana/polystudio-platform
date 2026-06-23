@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
+import { apiUrl } from './api'
 import {
   SlidersHorizontal,
   Brain,
@@ -178,7 +179,7 @@ function ToolsPanel() {
 
   useEffect(() => {
     setLoading(true)
-    fetch('/api/settings/skills')
+    fetch(apiUrl('/api/settings/skills'))
       .then((r) => r.json())
       .then((d) => setTools(d.skills || []))
       .catch(() => setToast({ type: 'error', msg: '加载失败' }))
@@ -188,7 +189,7 @@ function ToolsPanel() {
   const persist = useCallback(async (next: ToolItem[]) => {
     setSaving(true)
     try {
-      const res = await fetch('/api/settings/skills', {
+      const res = await fetch(apiUrl('/api/settings/skills'), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ skills: next }),
@@ -276,7 +277,7 @@ function WorkspacePanel() {
 
   useEffect(() => {
     setLoading(true)
-    fetch('/api/settings/workspace')
+    fetch(apiUrl('/api/settings/workspace'))
       .then((r) => r.json())
       .then((data: WorkspaceFile[]) => {
         const arr = Array.isArray(data) ? data : []
@@ -302,7 +303,7 @@ function WorkspacePanel() {
     setSaving(true)
     setToast(null)
     try {
-      const res = await fetch(`/api/settings/workspace/${selectedId}`, {
+      const res = await fetch(apiUrl(`/api/settings/workspace/${selectedId}`), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ content: editContent }),
@@ -393,7 +394,7 @@ function SkillPreview({ skill }: { skill: InstalledSkill }) {
   useEffect(() => {
     setLoading(true)
     setError(false)
-    fetch(`/api/settings/skills/installed/${skill.id}/content`)
+    fetch(apiUrl(`/api/settings/skills/installed/${skill.id}/content`))
       .then((r) => {
         if (!r.ok) throw new Error()
         return r.json()
@@ -429,7 +430,7 @@ function SkillsPanel() {
 
   useEffect(() => {
     setLoading(true)
-    fetch('/api/settings/skills/installed')
+    fetch(apiUrl('/api/settings/skills/installed'))
       .then((r) => r.json())
       .then((data) => setSkills(Array.isArray(data) ? data : []))
       .catch(() => setToast({ type: 'error', msg: '加载失败' }))
@@ -442,7 +443,7 @@ function SkillsPanel() {
     setSkills((prev) => prev.map((s) => (s.id === skill.id ? { ...s, enabled: next } : s)))
     setTogglingId(skill.id)
     try {
-      const res = await fetch(`/api/settings/skills/installed/${skill.id}`, {
+      const res = await fetch(apiUrl(`/api/settings/skills/installed/${skill.id}`), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ enabled: next }),
@@ -550,7 +551,7 @@ function MCPPanel() {
 
   useEffect(() => {
     setLoading(true)
-    fetch('/api/settings/mcp')
+    fetch(apiUrl('/api/settings/mcp'))
       .then((r) => r.json())
       .then((d) => {
         const servers = d.mcpServers || {}
@@ -605,7 +606,7 @@ function MCPPanel() {
       payload = { mcpServers: fromFormList(forms) }
     }
     try {
-      const res = await fetch('/api/settings/mcp', {
+      const res = await fetch(apiUrl('/api/settings/mcp'), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -726,7 +727,7 @@ function EnvPanel() {
 
   useEffect(() => {
     setLoading(true)
-    fetch('/api/settings/env')
+    fetch(apiUrl('/api/settings/env'))
       .then((r) => r.json())
       .then((d) => {
         const grps: EnvGroup[] = d.groups || []
@@ -750,7 +751,7 @@ function EnvPanel() {
     setSaving(true)
     setToast(null)
     try {
-      const res = await fetch('/api/settings/env', {
+      const res = await fetch(apiUrl('/api/settings/env'), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ updates: Object.entries(values).map(([key, value]) => ({ key, value })) }),
