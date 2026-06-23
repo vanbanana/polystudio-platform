@@ -37,9 +37,11 @@ const TOOL_LABELS: Record<string, string> = {
   qwen_omni_understand: '多模态理解',
 }
 
+// 助手正文里的 markdown 图片通常是模型把工具返回的 mock 占位图地址又复述了一遍，
+// 真实媒体已由 ToolMedia / ModelThumbnail 单独渲染，这里不再重复渲染图片。
 const TextPart: TextMessagePartComponent = ({ text }) => (
   <div className="at-md">
-    <ReactMarkdown>{text}</ReactMarkdown>
+    <ReactMarkdown components={{ img: () => null }}>{text}</ReactMarkdown>
   </div>
 )
 
