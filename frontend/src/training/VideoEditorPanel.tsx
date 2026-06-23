@@ -7,7 +7,7 @@ const PX_PER_SEC = 26
 const MIN_CLIP_PX = 64
 const HEAD_W = 66
 
-const isConcatenated = (m: MediaItem) => /concatenat/i.test(m.url)
+const isConcatenated = (m: MediaItem) => m.concatenated ?? /concatenat/i.test(m.url)
 
 function fmtTime(sec: number): string {
   if (!isFinite(sec) || sec < 0) sec = 0

@@ -8,6 +8,7 @@ export interface MediaItem {
   kind: 'image' | 'video' | 'audio'
   url: string
   prompt?: string
+  concatenated?: boolean
 }
 
 export interface ModelItem {
@@ -151,7 +152,13 @@ export function useAgentRuntime(options: AgentRuntimeOptions) {
                 const { onMedia, onModel } = optsRef.current
                 if (typeof result.image_url === 'string') onMedia?.({ kind: 'image', url: result.image_url, prompt: result.prompt })
                 const videoUrl = result.video_url || result.video_path
-                if (typeof videoUrl === 'string') onMedia?.({ kind: 'video', url: videoUrl, prompt: result.prompt })
+                if (typeof videoUrl === 'string')
+                  onMedia?.({
+                    kind: 'video',
+                    url: videoUrl,
+                    prompt: result.prompt,
+                    concatenated: part?.toolName === 'concatenate_videos',
+                  })
                 if (typeof result.audio_url === 'string') onMedia?.({ kind: 'audio', url: result.audio_url, prompt: result.prompt })
                 if (typeof result.model_url === 'string')
                   onModel?.({
