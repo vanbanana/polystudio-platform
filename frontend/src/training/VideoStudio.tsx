@@ -5,6 +5,7 @@ import { useAgentRuntime, type MediaItem } from './agentRuntime'
 import { useThreadScoped } from './threadScope'
 import StudioLayout from './StudioLayout'
 import AgentThread from './AgentThread'
+import VideoEditorPanel from './VideoEditorPanel'
 import './studio.css'
 
 const SUGGESTIONS = [
@@ -33,28 +34,11 @@ export default function VideoStudio() {
   const stage = (
     <>
       <div className="cz-preview-head">
-        <h3>成片</h3>
+        <h3>剪辑器</h3>
         <span className="count">{videos.length} 段</span>
       </div>
-      <div className="cz-preview-body">
-        {videos.length === 0 ? (
-          <div className="tp-stage-empty">
-            <Film size={38} strokeWidth={1.4} />
-            <p>还没有视频，在左侧对话里描述镜头开始生成</p>
-          </div>
-        ) : (
-          <div className="tp-video-grid">
-            {videos
-              .slice()
-              .reverse()
-              .map((v) => (
-                <div key={v.url} className="tp-video-card">
-                  <video src={v.url} controls preload="metadata" />
-                  {v.prompt && <div className="tp-video-cap">{v.prompt}</div>}
-                </div>
-              ))}
-          </div>
-        )}
+      <div className="cz-preview-body ve-host">
+        <VideoEditorPanel videos={videos} />
       </div>
     </>
   )

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { AssistantRuntimeProvider } from '@assistant-ui/react'
 import { Boxes } from 'lucide-react'
-import Model3DViewer from '../components/Model3DViewer'
+import BlenderViewport from './BlenderViewport'
 import { useAgentRuntime, type ModelItem } from './agentRuntime'
 import { useThreadScoped } from './threadScope'
 import StudioLayout from './StudioLayout'
@@ -43,7 +43,7 @@ export default function Model3DStudio() {
         <h3>3D 预览</h3>
         <span className="count">{models.length} 个模型</span>
       </div>
-      <div className="cz-preview-body">
+      <div className="cz-preview-body bv-host">
         {!active ? (
           <div className="tp-stage-empty">
             <Boxes size={38} strokeWidth={1.4} />
@@ -51,8 +51,8 @@ export default function Model3DStudio() {
           </div>
         ) : (
           <>
-            <div className="tp-model-stage">
-              <Model3DViewer
+            <div className="bv-stage-wrap">
+              <BlenderViewport
                 key={active.modelUrl}
                 modelUrl={active.modelUrl}
                 format={active.format}
