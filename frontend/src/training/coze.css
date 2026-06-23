@@ -303,6 +303,27 @@
   flex-shrink: 0;
 }
 
+.cz-panel-toggle {
+  margin-left: auto;
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  border: 1px solid var(--tp-border);
+  background: var(--tp-surface);
+  color: var(--tp-text-soft);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+}
+
+.cz-panel-toggle:hover {
+  border-color: var(--tp-border-strong);
+  color: var(--tp-text);
+  background: var(--tp-surface-2);
+}
+
 .cz-chat-title {
   font-size: 15px;
   font-weight: 600;

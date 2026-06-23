@@ -1,4 +1,4 @@
-import { ReactNode, useEffect } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 import {
   ThreadListPrimitive,
   ThreadListItemPrimitive,
@@ -6,7 +6,7 @@ import {
   useThreadListItem,
   useThreadListItemRuntime,
 } from '@assistant-ui/react'
-import { Plus, MessageSquare, Trash2 } from 'lucide-react'
+import { Plus, MessageSquare, Trash2, PanelRight, PanelRightClose } from 'lucide-react'
 import CourseSidebar from './CourseSidebar'
 
 const ThreadTitle = () => {
@@ -79,11 +79,15 @@ type Props = {
 }
 
 export default function StudioLayout({ children, onThread, chatTitle, chatSub, chatIcon, preview }: Props) {
+  // 右侧“生成结果”面板默认隐藏，结果直接出现在对话里；需要时可用顶部按钮展开。
+  const [showPreview, setShowPreview] = useState(false)
+  const hasPreview = preview !== undefined
+  const previewOpen = hasPreview && showPreview
   return (
     <div className="cz-app">
       <CourseSidebar history={<HistoryBlock />} />
       <div className="cz-content">
-        <main className={`cz-chat ${preview === undefined ? 'solo' : ''}`}>
+        <main className={`cz-chat ${previewOpen ? '' : 'solo'}`}>
           {chatTitle && (
             <div className="cz-chat-head">
               {chatIcon && <span className="ic">{chatIcon}</span>}
@@ -91,11 +95,22 @@ export default function StudioLayout({ children, onThread, chatTitle, chatSub, c
                 <div className="cz-chat-title">{chatTitle}</div>
                 {chatSub && <div className="cz-chat-sub">{chatSub}</div>}
               </div>
+              {hasPreview && (
+                <button
+                  type="button"
+                  className="cz-panel-toggle"
+                  onClick={() => setShowPreview((v) => !v)}
+                  aria-label={showPreview ? '隐藏结果面板' : '显示结果面板'}
+                  title={showPreview ? '隐藏结果面板' : '显示结果面板'}
+                >
+                  {showPreview ? <PanelRightClose size={18} /> : <PanelRight size={18} />}
+                </button>
+              )}
             </div>
           )}
           <div className="cz-chat-body">{children}</div>
         </main>
-        {preview !== undefined && <section className="cz-preview">{preview}</section>}
+        {previewOpen && <section className="cz-preview">{preview}</section>}
       </div>
       {onThread && <ThreadProbe onThread={onThread} />}
     </div>

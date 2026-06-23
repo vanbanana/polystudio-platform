@@ -207,6 +207,70 @@
   word-break: break-all;
 }
 
+/* 工具步骤 + 内联媒体 */
+.at-tool-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* 生成结果直接以对话气泡的形式居中展示在聊天里 */
+.at-media {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.at-media-fig {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  max-width: 100%;
+}
+
+.at-media-fig img,
+.at-media-fig video {
+  max-width: min(440px, 100%);
+  max-height: 460px;
+  width: auto;
+  border-radius: var(--tp-radius-sm);
+  border: 1px solid var(--tp-border);
+  background: var(--tp-surface);
+  display: block;
+}
+
+.at-media-fig img {
+  cursor: zoom-in;
+  transition: transform 0.15s ease;
+}
+
+.at-media-fig img:hover {
+  transform: scale(1.01);
+}
+
+.at-media-audio {
+  width: 100%;
+}
+
+.at-media-audio audio {
+  width: min(440px, 100%);
+}
+
+.at-media-fig figcaption {
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--tp-text-mut);
+  text-align: center;
+  max-width: min(440px, 100%);
+}
+
+.at-media-fig figcaption a {
+  color: var(--tp-primary);
+}
+
 /* 输入框 —— 圆角大输入框，底部模型标签 + 圆形发送 */
 .at-composer {
   margin-top: 16px;
