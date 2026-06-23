@@ -3,6 +3,7 @@ import ReactMarkdown from 'react-markdown'
 import { ThreadPrimitive, ComposerPrimitive, MessagePrimitive } from '@assistant-ui/react'
 import type { TextMessagePartComponent, ToolCallMessagePartComponent, ReasoningMessagePartComponent } from '@assistant-ui/react'
 import { ArrowUp, Square, Brain, Wrench, Check, Sparkle, X, Download } from 'lucide-react'
+import ModelThumbnail from './ModelThumbnail'
 import './agent-thread.css'
 
 const LightboxContext = createContext<(url: string) => void>(() => {})
@@ -55,7 +56,8 @@ const ToolMedia: FC<{ result: unknown }> = ({ result }) => {
   const videoUrl = str(r.video_url) || str(r.video_path)
   const audioUrl = str(r.audio_url)
   const modelUrl = str(r.model_url)
-  const previewUrl = str(r.preview_url)
+  const modelFormat = (str(r.format) || 'glb') as 'obj' | 'glb'
+  const mtlUrl = str(r.mtl_url) || undefined
   const prompt = str(r.prompt) || undefined
   if (!imageUrl && !videoUrl && !audioUrl && !modelUrl) return null
 
@@ -81,9 +83,8 @@ const ToolMedia: FC<{ result: unknown }> = ({ result }) => {
       )}
       {modelUrl && (
         <figure className="at-media-fig">
-          {previewUrl ? (
-            <img src={previewUrl} alt={prompt || ''} loading="lazy" onClick={() => openLightbox(previewUrl)} />
-          ) : null}
+          <ModelThumbnail modelUrl={modelUrl} format={modelFormat} mtlUrl={mtlUrl} />
+          {prompt && <figcaption className="at-model-thumb-cap">{prompt}</figcaption>}
           <figcaption>
             3D 模型 ·{' '}
             <a href={modelUrl} target="_blank" rel="noreferrer">

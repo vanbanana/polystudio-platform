@@ -271,6 +271,43 @@
   color: var(--tp-primary);
 }
 
+/* 内联 3D 缩略图：用真实 GLB 实时渲染（替代 mock 占位图） */
+.at-model-thumb {
+  position: relative;
+  width: min(360px, 100%);
+  aspect-ratio: 4 / 3;
+  border-radius: var(--tp-radius-sm);
+  border: 1px solid var(--tp-border);
+  overflow: hidden;
+  background: #1f2024;
+}
+
+.at-model-thumb canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.at-model-thumb-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 7px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 999px;
+  pointer-events: none;
+}
+
+.at-model-thumb-cap {
+  margin-top: 2px;
+}
+
 /* 输入框 —— 圆角大输入框，底部模型标签 + 圆形发送 */
 .at-composer {
   margin-top: 16px;
