@@ -8,11 +8,34 @@
 .at-viewport {
   flex: 1;
   overflow-y: auto;
+  overflow-x: hidden;
   display: flex;
   flex-direction: column;
   gap: 18px;
   padding: 4px 2px;
   scroll-behavior: smooth;
+  /* 细滚动条，默认隐藏，仅滚动/悬停时浮现，避免在对话内容里出现一条难看的常驻竖条 */
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+.at-viewport:hover,
+.at-viewport:focus-within {
+  scrollbar-color: var(--tp-border) transparent;
+}
+.at-viewport::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.at-viewport::-webkit-scrollbar-track {
+  background: transparent;
+}
+.at-viewport::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 999px;
+}
+.at-viewport:hover::-webkit-scrollbar-thumb,
+.at-viewport:focus-within::-webkit-scrollbar-thumb {
+  background: var(--tp-border-strong);
 }
 
 .at-viewport-spacer {
@@ -137,7 +160,76 @@
   padding: 0;
 }
 
-/* 思考链 */
+/* 通用动画 */
+@keyframes at-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.at-spin {
+  animation: at-spin 0.8s linear infinite;
+}
+
+@keyframes at-dot {
+  0%,
+  80%,
+  100% {
+    opacity: 0.2;
+    transform: translateY(0);
+  }
+  40% {
+    opacity: 1;
+    transform: translateY(-2px);
+  }
+}
+.at-dots {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+.at-dots i {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: currentColor;
+  display: inline-block;
+  animation: at-dot 1.2s ease-in-out infinite;
+}
+.at-dots i:nth-child(2) {
+  animation-delay: 0.18s;
+}
+.at-dots i:nth-child(3) {
+  animation-delay: 0.36s;
+}
+
+/* 思考加载态（首个内容到达前） */
+.at-thinking {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--tp-text-soft);
+  background: var(--tp-surface);
+  border: 1px solid var(--tp-border);
+  border-radius: 999px;
+  padding: 7px 14px;
+  width: fit-content;
+}
+.at-thinking-icon {
+  color: var(--tp-primary);
+  animation: at-pulse 1.6s ease-in-out infinite;
+}
+@keyframes at-pulse {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* 思考链 / 命中技能 */
 .at-reasoning {
   display: flex;
   align-items: center;
@@ -146,6 +238,10 @@
   color: var(--tp-text-mut);
   font-style: italic;
 }
+.at-reasoning-icon {
+  flex-shrink: 0;
+  color: var(--tp-primary);
+}
 
 /* 工具调用步骤 */
 .at-tool {
@@ -153,6 +249,12 @@
   border-radius: var(--tp-radius-sm);
   background: var(--tp-surface);
   overflow: hidden;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.at-tool.running {
+  border-color: var(--tp-primary);
+  box-shadow: 0 0 0 3px var(--tp-primary-soft);
 }
 
 .at-tool > summary {
@@ -184,6 +286,11 @@
   background: var(--tp-surface-2);
 }
 
+.at-tool-icon.running {
+  color: var(--tp-on-primary);
+  background: var(--tp-primary);
+}
+
 .at-tool-name {
   font-weight: 600;
   color: var(--tp-text);
@@ -193,13 +300,33 @@
   margin-left: auto;
   font-size: 12px;
   color: var(--tp-text-mut);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.at-tool-status.running {
+  color: var(--tp-primary);
+  font-weight: 600;
+}
+
+.at-tool-body {
+  border-top: 1px solid var(--tp-border);
+  background: var(--tp-surface-2);
+}
+
+.at-tool-arglabel {
+  padding: 8px 13px 0;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: var(--tp-text-mut);
+  text-transform: uppercase;
 }
 
 .at-tool-pre {
   margin: 0;
-  padding: 10px 13px;
-  border-top: 1px solid var(--tp-border);
-  background: var(--tp-surface-2);
+  padding: 6px 13px 11px;
   font-size: 12px;
   line-height: 1.6;
   color: var(--tp-text-soft);

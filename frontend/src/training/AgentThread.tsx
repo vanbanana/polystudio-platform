@@ -2,7 +2,7 @@ import { FC, createContext, useContext, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import { ThreadPrimitive, ComposerPrimitive, MessagePrimitive } from '@assistant-ui/react'
 import type { TextMessagePartComponent, ToolCallMessagePartComponent, ReasoningMessagePartComponent } from '@assistant-ui/react'
-import { ArrowUp, Square, Brain, Wrench, Check, Sparkle, X, Download } from 'lucide-react'
+import { ArrowUp, Square, Brain, Check, Sparkle, X, Download, Loader2 } from 'lucide-react'
 import ModelThumbnail from './ModelThumbnail'
 import './agent-thread.css'
 
@@ -39,9 +39,17 @@ const TextPart: TextMessagePartComponent = ({ text }) => (
   </div>
 )
 
+const Dots: FC = () => (
+  <span className="at-dots" aria-hidden>
+    <i />
+    <i />
+    <i />
+  </span>
+)
+
 const ReasoningPart: ReasoningMessagePartComponent = ({ text }) => (
   <div className="at-reasoning">
-    <Brain size={13} /> {text}
+    <Brain size={13} className="at-reasoning-icon" /> <span>{text}</span>
   </div>
 )
 
@@ -100,16 +108,34 @@ const ToolMedia: FC<{ result: unknown }> = ({ result }) => {
 const ToolFallback: ToolCallMessagePartComponent = ({ toolName, argsText, result, status }) => {
   const done = status?.type === 'complete' || result !== undefined
   const label = TOOL_LABELS[toolName] || toolName
+  const hasArgs = Boolean(argsText && argsText !== '{}')
+  // 执行中默认展开，让用户看到完整的工具调用参数；完成后允许折叠。
+  const [open, setOpen] = useState(true)
   return (
     <div className="at-tool-wrap">
-      <details className="at-tool">
+      <details
+        className={`at-tool ${done ? 'done' : 'running'}`}
+        open={open}
+        onToggle={(e) => setOpen((e.currentTarget as HTMLDetailsElement).open)}
+      >
         <summary>
-          <span className={`at-tool-icon ${done ? 'done' : ''}`}>{done ? <Check size={13} /> : <Wrench size={13} />}</span>
+          <span className={`at-tool-icon ${done ? 'done' : 'running'}`}>
+            {done ? <Check size={13} /> : <Loader2 size={13} className="at-spin" />}
+          </span>
           <span className="at-tool-name">{label}</span>
-          <span className="at-tool-status">{done ? '完成' : '执行中…'}</span>
+          <span className={`at-tool-status ${done ? '' : 'running'}`}>
+            {done ? '完成' : (
+              <>
+                调用中<Dots />
+              </>
+            )}
+          </span>
         </summary>
-        {argsText && argsText !== '{}' && (
-          <pre className="at-tool-pre">{argsText}</pre>
+        {hasArgs && (
+          <div className="at-tool-body">
+            <div className="at-tool-arglabel">调用参数</div>
+            <pre className="at-tool-pre">{argsText}</pre>
+          </div>
         )}
       </details>
       <ToolMedia result={result} />
@@ -131,6 +157,16 @@ const AssistantMessage: FC = () => (
       <MessagePrimitive.Parts
         components={{ Text: TextPart, Reasoning: ReasoningPart, tools: { Fallback: ToolFallback } }}
       />
+      {/* 首个内容到达前（真实生成 8–90s）显示思考加载态，避免界面看起来卡住 */}
+      <ThreadPrimitive.If running>
+        <MessagePrimitive.If last hasContent={false}>
+          <div className="at-thinking">
+            <Brain size={14} className="at-thinking-icon" />
+            <span>Agent 正在思考</span>
+            <Dots />
+          </div>
+        </MessagePrimitive.If>
+      </ThreadPrimitive.If>
     </div>
   </MessagePrimitive.Root>
 )
