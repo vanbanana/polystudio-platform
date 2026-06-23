@@ -2,11 +2,16 @@ import { FC, createContext, useContext, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import { ThreadPrimitive, ComposerPrimitive, MessagePrimitive } from '@assistant-ui/react'
 import type { TextMessagePartComponent, ToolCallMessagePartComponent, ReasoningMessagePartComponent } from '@assistant-ui/react'
-import { ArrowUp, Square, Brain, Wrench, Check, Sparkle, X, Download } from 'lucide-react'
+import { ArrowUp, Square, Brain, Check, Sparkle, X, Download, Loader2, Bot, type LucideIcon } from 'lucide-react'
+import ModelThumbnail from './ModelThumbnail'
 import './agent-thread.css'
 
 const LightboxContext = createContext<(url: string) => void>(() => {})
 const useLightbox = () => useContext(LightboxContext)
+
+type AgentMetaCtx = { name: string; icon: LucideIcon; color: string }
+const AgentMetaContext = createContext<AgentMetaCtx>({ name: '全能 Agent', icon: Bot, color: 'var(--tp-primary)' })
+const useAgentMeta = () => useContext(AgentMetaContext)
 
 function safeParse(text: string): unknown {
   try {
@@ -32,17 +37,45 @@ const TOOL_LABELS: Record<string, string> = {
   qwen_omni_understand: '多模态理解',
 }
 
+// 助手正文里的 markdown 图片通常是模型把工具返回的 mock 占位图地址又复述了一遍，
+// 真实媒体已由 ToolMedia / ModelThumbnail 单独渲染，这里不再重复渲染图片。
 const TextPart: TextMessagePartComponent = ({ text }) => (
   <div className="at-md">
-    <ReactMarkdown>{text}</ReactMarkdown>
+    <ReactMarkdown components={{ img: () => null }}>{text}</ReactMarkdown>
   </div>
 )
 
-const ReasoningPart: ReasoningMessagePartComponent = ({ text }) => (
-  <div className="at-reasoning">
-    <Brain size={13} /> {text}
-  </div>
+const Dots: FC = () => (
+  <span className="at-dots" aria-hidden>
+    <i />
+    <i />
+    <i />
+  </span>
 )
+
+const ReasoningPart: ReasoningMessagePartComponent = ({ text }) => {
+  // skill_matched 走的也是 reasoning 通道，保留原来的紧凑单行样式
+  if (text.startsWith('命中技能')) {
+    return (
+      <div className="at-reasoning">
+        <Sparkle size={13} className="at-reasoning-icon" /> <span>{text}</span>
+      </div>
+    )
+  }
+  // 模型真实的推理内容（reasoning_content）：可折叠的「深度思考」面板，默认展开
+  return (
+    <details className="at-think" open>
+      <summary>
+        <Brain size={13} className="at-think-icon" />
+        <span className="at-think-title">深度思考</span>
+        <Dots />
+      </summary>
+      <div className="at-think-body">
+        <ReactMarkdown>{text}</ReactMarkdown>
+      </div>
+    </details>
+  )
+}
 
 // 把工具产出的媒体（图/视频/音频/3D 预览）直接渲染进对话气泡，居中显示，点击图片放大。
 const ToolMedia: FC<{ result: unknown }> = ({ result }) => {
@@ -55,7 +88,8 @@ const ToolMedia: FC<{ result: unknown }> = ({ result }) => {
   const videoUrl = str(r.video_url) || str(r.video_path)
   const audioUrl = str(r.audio_url)
   const modelUrl = str(r.model_url)
-  const previewUrl = str(r.preview_url)
+  const modelFormat = (str(r.format) || 'glb') as 'obj' | 'glb'
+  const mtlUrl = str(r.mtl_url) || undefined
   const prompt = str(r.prompt) || undefined
   if (!imageUrl && !videoUrl && !audioUrl && !modelUrl) return null
 
@@ -81,9 +115,8 @@ const ToolMedia: FC<{ result: unknown }> = ({ result }) => {
       )}
       {modelUrl && (
         <figure className="at-media-fig">
-          {previewUrl ? (
-            <img src={previewUrl} alt={prompt || ''} loading="lazy" onClick={() => openLightbox(previewUrl)} />
-          ) : null}
+          <ModelThumbnail modelUrl={modelUrl} format={modelFormat} mtlUrl={mtlUrl} />
+          {prompt && <figcaption className="at-model-thumb-cap">{prompt}</figcaption>}
           <figcaption>
             3D 模型 ·{' '}
             <a href={modelUrl} target="_blank" rel="noreferrer">
@@ -99,16 +132,34 @@ const ToolMedia: FC<{ result: unknown }> = ({ result }) => {
 const ToolFallback: ToolCallMessagePartComponent = ({ toolName, argsText, result, status }) => {
   const done = status?.type === 'complete' || result !== undefined
   const label = TOOL_LABELS[toolName] || toolName
+  const hasArgs = Boolean(argsText && argsText !== '{}')
+  // 执行中默认展开，让用户看到完整的工具调用参数；完成后允许折叠。
+  const [open, setOpen] = useState(true)
   return (
     <div className="at-tool-wrap">
-      <details className="at-tool">
+      <details
+        className={`at-tool ${done ? 'done' : 'running'}`}
+        open={open}
+        onToggle={(e) => setOpen((e.currentTarget as HTMLDetailsElement).open)}
+      >
         <summary>
-          <span className={`at-tool-icon ${done ? 'done' : ''}`}>{done ? <Check size={13} /> : <Wrench size={13} />}</span>
+          <span className={`at-tool-icon ${done ? 'done' : 'running'}`}>
+            {done ? <Check size={13} /> : <Loader2 size={13} className="at-spin" />}
+          </span>
           <span className="at-tool-name">{label}</span>
-          <span className="at-tool-status">{done ? '完成' : '执行中…'}</span>
+          <span className={`at-tool-status ${done ? '' : 'running'}`}>
+            {done ? '完成' : (
+              <>
+                调用中<Dots />
+              </>
+            )}
+          </span>
         </summary>
-        {argsText && argsText !== '{}' && (
-          <pre className="at-tool-pre">{argsText}</pre>
+        {hasArgs && (
+          <div className="at-tool-body">
+            <div className="at-tool-arglabel">调用参数</div>
+            <pre className="at-tool-pre">{argsText}</pre>
+          </div>
         )}
       </details>
       <ToolMedia result={result} />
@@ -124,15 +175,35 @@ const UserMessage: FC = () => (
   </MessagePrimitive.Root>
 )
 
-const AssistantMessage: FC = () => (
-  <MessagePrimitive.Root className="at-msg at-msg-assistant">
-    <div className="at-content">
-      <MessagePrimitive.Parts
-        components={{ Text: TextPart, Reasoning: ReasoningPart, tools: { Fallback: ToolFallback } }}
-      />
-    </div>
-  </MessagePrimitive.Root>
-)
+const AssistantMessage: FC = () => {
+  const agent = useAgentMeta()
+  const Icon = agent.icon
+  return (
+    <MessagePrimitive.Root className="at-msg at-msg-assistant" style={{ ['--at-accent' as string]: agent.color }}>
+      <div className="at-msg-head">
+        <span className="at-avatar">
+          <Icon size={15} strokeWidth={1.9} />
+        </span>
+        <span className="at-agent-name">{agent.name}</span>
+      </div>
+      <div className="at-content">
+        <MessagePrimitive.Parts
+          components={{ Text: TextPart, Reasoning: ReasoningPart, tools: { Fallback: ToolFallback } }}
+        />
+        {/* 首个内容到达前（真实生成 8–90s）显示思考加载态，避免界面看起来卡住 */}
+        <ThreadPrimitive.If running>
+          <MessagePrimitive.If last hasContent={false}>
+            <div className="at-thinking">
+              <Brain size={14} className="at-thinking-icon" />
+              <span>Agent 正在思考</span>
+              <Dots />
+            </div>
+          </MessagePrimitive.If>
+        </ThreadPrimitive.If>
+      </div>
+    </MessagePrimitive.Root>
+  )
+}
 
 type Props = {
   placeholder?: string
@@ -141,11 +212,25 @@ type Props = {
   emptyHint?: string
   centered?: boolean
   modelLabel?: string
+  agentName?: string
+  agentIcon?: LucideIcon
+  agentColor?: string
 }
 
-export default function AgentThread({ placeholder, suggestions = [], emptyTitle, emptyHint, centered, modelLabel = '全能 Agent' }: Props) {
+export default function AgentThread({
+  placeholder,
+  suggestions = [],
+  emptyTitle,
+  emptyHint,
+  centered,
+  modelLabel = '全能 Agent',
+  agentName = '全能 Agent',
+  agentIcon = Bot,
+  agentColor = 'var(--tp-primary)',
+}: Props) {
   const [lightbox, setLightbox] = useState<string | null>(null)
   return (
+    <AgentMetaContext.Provider value={{ name: agentName, icon: agentIcon, color: agentColor }}>
     <LightboxContext.Provider value={setLightbox}>
     <ThreadPrimitive.Root className={`at-root ${centered ? 'centered' : ''}`}>
       <ThreadPrimitive.Viewport className="at-viewport">
@@ -209,5 +294,6 @@ export default function AgentThread({ placeholder, suggestions = [], emptyTitle,
       </div>
     )}
     </LightboxContext.Provider>
+    </AgentMetaContext.Provider>
   )
 }

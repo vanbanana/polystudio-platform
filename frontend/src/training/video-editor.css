@@ -1,0 +1,289 @@
+/* 短视频「剪辑器」视图 —— 监视器 + 走带 + 时间线轨道 */
+.ve-host {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.ve-root {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  gap: 12px;
+}
+
+.ve-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  min-height: 56vh;
+  text-align: center;
+  color: var(--tp-text-mut);
+}
+
+.ve-empty p {
+  font-size: 13.5px;
+  max-width: 280px;
+  line-height: 1.6;
+}
+
+/* 监视器 */
+.ve-monitor {
+  flex: 1 1 auto;
+  min-height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    repeating-conic-gradient(#0d0d0f 0% 25%, #131316 0% 50%) 50% / 22px 22px;
+  border: 1px solid var(--tp-border);
+  border-radius: var(--tp-radius-sm);
+  overflow: hidden;
+}
+
+.ve-monitor-video {
+  max-width: 100%;
+  max-height: 100%;
+  display: block;
+}
+
+.ve-monitor-empty {
+  color: var(--tp-text-mut);
+  font-size: 13px;
+}
+
+/* 走带控制条 */
+.ve-transport {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  background: var(--tp-surface);
+  border: 1px solid var(--tp-border);
+  border-radius: var(--tp-radius-sm);
+}
+
+.ve-tp-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid var(--tp-border);
+  background: var(--tp-surface-2);
+  color: var(--tp-text-soft);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.ve-tp-btn:hover {
+  border-color: var(--tp-border-strong);
+  color: var(--tp-text);
+}
+
+.ve-tp-btn.play {
+  background: var(--tp-primary);
+  color: var(--tp-on-primary);
+  border-color: transparent;
+}
+
+.ve-timecode {
+  font-variant-numeric: tabular-nums;
+  font-size: 13px;
+  letter-spacing: 0.5px;
+  color: var(--tp-text);
+}
+
+.ve-timecode-sep {
+  color: var(--tp-text-mut);
+  margin: 0 2px;
+}
+
+.ve-badge {
+  margin-left: auto;
+  font-size: 11px;
+  padding: 3px 9px;
+  border-radius: 20px;
+  background: var(--tp-primary);
+  color: var(--tp-on-primary);
+}
+
+/* 时间线 */
+.ve-timeline {
+  background: var(--tp-bg-soft);
+  border: 1px solid var(--tp-border);
+  border-radius: var(--tp-radius-sm);
+  padding: 8px 10px 12px;
+  overflow-x: auto;
+}
+
+.ve-ruler {
+  position: relative;
+  height: 18px;
+  border-bottom: 1px solid var(--tp-border);
+  margin-bottom: 8px;
+}
+
+.ve-tick {
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%);
+  font-size: 10px;
+  color: var(--tp-text-mut);
+  font-variant-numeric: tabular-nums;
+}
+
+.ve-tick::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 14px;
+  width: 1px;
+  height: 5px;
+  background: var(--tp-border-strong);
+}
+
+.ve-tracks {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ve-track {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  height: 56px;
+}
+
+.ve-track-head {
+  flex-shrink: 0;
+  width: 66px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 3px;
+  padding-right: 8px;
+  border-right: 1px solid var(--tp-border);
+}
+
+.ve-track-name {
+  font-size: 12px;
+  color: var(--tp-text-soft);
+}
+
+.ve-track-count {
+  font-size: 10.5px;
+  color: var(--tp-text-mut);
+}
+
+.ve-track-lane {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding-left: 6px;
+  background:
+    repeating-linear-gradient(90deg, transparent 0 25px, var(--tp-border) 25px 26px);
+  background-size: 26px 100%;
+  border-radius: 6px;
+  min-width: 0;
+}
+
+.ve-track.accent .ve-track-lane {
+  background-color: var(--tp-primary-soft);
+}
+
+.ve-track-empty {
+  font-size: 11.5px;
+  color: var(--tp-text-mut);
+  padding-left: 8px;
+}
+
+/* 时间线片段块 */
+.ve-clip {
+  position: relative;
+  height: 46px;
+  flex-shrink: 0;
+  border-radius: 6px;
+  border: 1.5px solid var(--tp-border-strong);
+  background: #000;
+  overflow: hidden;
+  cursor: pointer;
+  padding: 0;
+  transition: border-color 0.12s ease, transform 0.1s ease;
+}
+
+.ve-clip:hover {
+  transform: translateY(-1px);
+}
+
+.ve-clip.active {
+  border-color: var(--tp-primary);
+  box-shadow: 0 0 0 1px var(--tp-primary);
+}
+
+.ve-clip-thumb {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.62;
+  pointer-events: none;
+}
+
+.ve-clip-label {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 5px;
+  font-size: 10px;
+  color: #fff;
+  background: linear-gradient(rgba(0, 0, 0, 0.6), transparent);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ve-clip-dur {
+  position: absolute;
+  right: 4px;
+  bottom: 3px;
+  font-size: 9.5px;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.55);
+  padding: 1px 4px;
+  border-radius: 4px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 播放头 */
+.ve-playhead {
+  position: absolute;
+  top: -8px;
+  bottom: 0;
+  width: 2px;
+  background: #e5484d;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.ve-playhead::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 7px solid #e5484d;
+}

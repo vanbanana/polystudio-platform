@@ -1,0 +1,158 @@
+/* 类 Blender 3D 视口：工具栏 + 视口 + 灯光面板 */
+.bv-host {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.bv-stage-wrap {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+}
+
+.bv-root {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  gap: 8px;
+}
+
+.bv-toolbar {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.bv-seg {
+  display: inline-flex;
+  background: var(--tp-surface-2);
+  border: 1px solid var(--tp-border);
+  border-radius: 9px;
+  padding: 2px;
+  gap: 2px;
+}
+
+.bv-seg-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12.5px;
+  padding: 5px 11px;
+  border: none;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--tp-text-mut);
+  cursor: pointer;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+
+.bv-seg-btn:hover {
+  color: var(--tp-text);
+}
+
+.bv-seg-btn.on {
+  background: var(--tp-primary);
+  color: var(--tp-on-primary);
+}
+
+.bv-icon-btn {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--tp-border);
+  border-radius: 8px;
+  background: var(--tp-surface-2);
+  color: var(--tp-text-soft);
+  cursor: pointer;
+}
+
+.bv-icon-btn:hover {
+  color: var(--tp-text);
+  border-color: var(--tp-border-strong);
+}
+
+.bv-stage {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 320px;
+  border: 1px solid var(--tp-border);
+  border-radius: var(--tp-radius-sm);
+  overflow: hidden;
+  background: #1f2024;
+}
+
+.bv-stage canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* 灯光 / 渲染面板（悬浮右上） */
+.bv-lightpanel {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 196px;
+  padding: 10px 12px 12px;
+  border-radius: 10px;
+  background: rgba(20, 21, 24, 0.82);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #e8e8ea;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.bv-lp-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+  padding-bottom: 4px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.bv-lp-row {
+  display: grid;
+  grid-template-columns: 56px 1fr 30px;
+  align-items: center;
+  gap: 7px;
+  font-size: 11px;
+  color: #c4c4c8;
+}
+
+.bv-lp-row em {
+  font-style: normal;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: #fff;
+}
+
+.bv-lp-row input[type='range'] {
+  width: 100%;
+  accent-color: #4b8ef0;
+  cursor: pointer;
+}
+
+.bv-lp-row.color {
+  grid-template-columns: 56px 1fr;
+}
+
+.bv-lp-row.color input[type='color'] {
+  width: 100%;
+  height: 22px;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 6px;
+  background: transparent;
+  cursor: pointer;
+}

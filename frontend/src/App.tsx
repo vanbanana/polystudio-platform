@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import ChatInterface from './components/ChatInterface'
-import SettingsPage from './components/SettingsPage'
 import { NavProvider, type TrainingView } from './training/nav'
+import SettingsStudio from './training/SettingsStudio'
 import TrainingHome from './training/TrainingHome'
 import ImageStudio from './training/ImageStudio'
 import Model3DStudio from './training/Model3DStudio'
@@ -61,31 +61,29 @@ function App() {
 
   const toggleTheme = () => setTheme((t) => (t === 'dark' ? 'light' : 'dark'))
 
-  const navigateView = (next: TrainingView) => {
-    const url = new URL(window.location.href)
-    url.searchParams.delete('canvasId')
-    url.searchParams.delete('page')
-    if (next === 'home') url.searchParams.delete('view')
-    else url.searchParams.set('view', next)
-    window.history.pushState({}, '', url.toString())
+  // pushState rejects URLs carrying userinfo (e.g. https://user:pass@host),
+  // so navigate with a relative path+query that never includes credentials.
+  const pushRelative = (params: URLSearchParams) => {
+    const qs = params.toString()
+    window.history.pushState({}, '', `${window.location.pathname}${qs ? `?${qs}` : ''}`)
     window.dispatchEvent(new PopStateEvent('popstate'))
+  }
+
+  const navigateView = (next: TrainingView) => {
+    const params = new URLSearchParams(window.location.search)
+    params.delete('canvasId')
+    params.delete('page')
+    if (next === 'home') params.delete('view')
+    else params.set('view', next)
+    pushRelative(params)
   }
 
   const openSettings = () => {
-    const url = new URL(window.location.href)
-    url.searchParams.delete('canvasId')
-    url.searchParams.delete('view')
-    url.searchParams.set('page', 'settings')
-    window.history.pushState({}, '', url.toString())
-    window.dispatchEvent(new PopStateEvent('popstate'))
-  }
-
-  if (page === 'settings') {
-    return (
-      <div className="app">
-        <SettingsPage theme={theme} onToggleTheme={toggleTheme} />
-      </div>
-    )
+    const params = new URLSearchParams(window.location.search)
+    params.delete('canvasId')
+    params.delete('view')
+    params.set('page', 'settings')
+    pushRelative(params)
   }
 
   // 经典完整画布（保留可达，通过 canvasId 链接进入）
@@ -98,6 +96,8 @@ function App() {
   }
 
   const activeView = (VALID_VIEWS.includes(view as TrainingView) ? view : 'home') as TrainingView
+
+  const isSettings = page === 'settings'
 
   const renderStudio = () => {
     switch (activeView) {
@@ -128,7 +128,7 @@ function App() {
             openSettings,
           }}
         >
-          {renderStudio()}
+          {isSettings ? <SettingsStudio /> : renderStudio()}
         </NavProvider>
       </div>
     </div>

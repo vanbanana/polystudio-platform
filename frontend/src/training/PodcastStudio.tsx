@@ -6,7 +6,10 @@ import { useThreadScoped } from './threadScope'
 import StudioLayout from './StudioLayout'
 import AgentThread from './AgentThread'
 import PodcastPlayer from './PodcastPlayer'
+import { AGENT_BY_VIEW } from './nav'
 import './studio.css'
+
+const AGENT = AGENT_BY_VIEW.podcast
 
 const SUGGESTIONS = [
   '生成一段 1 分钟的科技播客开场白，主持人是亲切的女声',
@@ -72,6 +75,9 @@ export default function PodcastStudio() {
           emptyTitle="描述你的播客"
           emptyHint="左侧会依次显示脚本生成、音色设计、语音合成等步骤。"
           modelLabel="语音合成 · Agent"
+          agentName={AGENT.name}
+          agentIcon={AGENT.icon}
+          agentColor={AGENT.color}
         />
       </StudioLayout>
     </AssistantRuntimeProvider>

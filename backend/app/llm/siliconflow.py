@@ -5,6 +5,7 @@ import os
 import logging
 from langchain_openai import ChatOpenAI
 from app.llm.base import BaseLLMProvider
+from app.llm.reasoning_chat import ReasoningChatOpenAI
 
 logger = logging.getLogger(__name__)
 
@@ -28,7 +29,7 @@ class SiliconFlowLLMProvider(BaseLLMProvider):
         """创建 SiliconFlow ChatModel 实例"""
         logger.info(f"🔷 创建 SiliconFlow LLM: model={self.model_name}, base_url={self.base_url}")
         
-        model = ChatOpenAI(
+        model = ReasoningChatOpenAI(
             model=self.model_name,
             api_key=self.api_key,
             base_url=self.base_url,

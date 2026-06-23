@@ -5,7 +5,11 @@ import { useAgentRuntime, type MediaItem } from './agentRuntime'
 import { useThreadScoped } from './threadScope'
 import StudioLayout from './StudioLayout'
 import AgentThread from './AgentThread'
+import VideoEditorPanel from './VideoEditorPanel'
+import { AGENT_BY_VIEW } from './nav'
 import './studio.css'
+
+const AGENT = AGENT_BY_VIEW.video
 
 const SUGGESTIONS = [
   '海浪拍打沙滩，夕阳西下，镜头缓慢推进',
@@ -33,28 +37,11 @@ export default function VideoStudio() {
   const stage = (
     <>
       <div className="cz-preview-head">
-        <h3>成片</h3>
+        <h3>剪辑器</h3>
         <span className="count">{videos.length} 段</span>
       </div>
-      <div className="cz-preview-body">
-        {videos.length === 0 ? (
-          <div className="tp-stage-empty">
-            <Film size={38} strokeWidth={1.4} />
-            <p>还没有视频，在左侧对话里描述镜头开始生成</p>
-          </div>
-        ) : (
-          <div className="tp-video-grid">
-            {videos
-              .slice()
-              .reverse()
-              .map((v) => (
-                <div key={v.url} className="tp-video-card">
-                  <video src={v.url} controls preload="metadata" />
-                  {v.prompt && <div className="tp-video-cap">{v.prompt}</div>}
-                </div>
-              ))}
-          </div>
-        )}
+      <div className="cz-preview-body ve-host">
+        <VideoEditorPanel videos={videos} />
       </div>
     </>
   )
@@ -74,6 +61,9 @@ export default function VideoStudio() {
           emptyTitle="描述你的镜头"
           emptyHint="视频生成耗时较长（约 1-3 分钟），左侧会实时显示 Agent 的工具调用过程。"
           modelLabel="视频生成 · Agent"
+          agentName={AGENT.name}
+          agentIcon={AGENT.icon}
+          agentColor={AGENT.color}
         />
       </StudioLayout>
     </AssistantRuntimeProvider>
