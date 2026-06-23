@@ -1,9 +1,20 @@
-import { FC } from 'react'
+import { FC, createContext, useContext, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import { ThreadPrimitive, ComposerPrimitive, MessagePrimitive } from '@assistant-ui/react'
 import type { TextMessagePartComponent, ToolCallMessagePartComponent, ReasoningMessagePartComponent } from '@assistant-ui/react'
-import { ArrowUp, Square, Brain, Wrench, Check, Sparkle } from 'lucide-react'
+import { ArrowUp, Square, Brain, Wrench, Check, Sparkle, X, Download } from 'lucide-react'
 import './agent-thread.css'
+
+const LightboxContext = createContext<(url: string) => void>(() => {})
+const useLightbox = () => useContext(LightboxContext)
+
+function safeParse(text: string): unknown {
+  try {
+    return JSON.parse(text)
+  } catch {
+    return null
+  }
+}
 
 const TOOL_LABELS: Record<string, string> = {
   generate_volcano_image: '生成图片',
@@ -33,20 +44,75 @@ const ReasoningPart: ReasoningMessagePartComponent = ({ text }) => (
   </div>
 )
 
+// 把工具产出的媒体（图/视频/音频/3D 预览）直接渲染进对话气泡，居中显示，点击图片放大。
+const ToolMedia: FC<{ result: unknown }> = ({ result }) => {
+  const openLightbox = useLightbox()
+  const obj = typeof result === 'string' ? safeParse(result) : result
+  if (!obj || typeof obj !== 'object') return null
+  const r = obj as Record<string, unknown>
+  const str = (v: unknown) => (typeof v === 'string' && v ? v : null)
+  const imageUrl = str(r.image_url)
+  const videoUrl = str(r.video_url) || str(r.video_path)
+  const audioUrl = str(r.audio_url)
+  const modelUrl = str(r.model_url)
+  const previewUrl = str(r.preview_url)
+  const prompt = str(r.prompt) || undefined
+  if (!imageUrl && !videoUrl && !audioUrl && !modelUrl) return null
+
+  return (
+    <div className="at-media">
+      {imageUrl && (
+        <figure className="at-media-fig">
+          <img src={imageUrl} alt={prompt || ''} loading="lazy" onClick={() => openLightbox(imageUrl)} />
+          {prompt && <figcaption>{prompt}</figcaption>}
+        </figure>
+      )}
+      {videoUrl && (
+        <figure className="at-media-fig">
+          <video src={videoUrl} controls preload="metadata" />
+          {prompt && <figcaption>{prompt}</figcaption>}
+        </figure>
+      )}
+      {audioUrl && (
+        <figure className="at-media-fig at-media-audio">
+          <audio src={audioUrl} controls />
+          {prompt && <figcaption>{prompt}</figcaption>}
+        </figure>
+      )}
+      {modelUrl && (
+        <figure className="at-media-fig">
+          {previewUrl ? (
+            <img src={previewUrl} alt={prompt || ''} loading="lazy" onClick={() => openLightbox(previewUrl)} />
+          ) : null}
+          <figcaption>
+            3D 模型 ·{' '}
+            <a href={modelUrl} target="_blank" rel="noreferrer">
+              下载模型
+            </a>
+          </figcaption>
+        </figure>
+      )}
+    </div>
+  )
+}
+
 const ToolFallback: ToolCallMessagePartComponent = ({ toolName, argsText, result, status }) => {
   const done = status?.type === 'complete' || result !== undefined
   const label = TOOL_LABELS[toolName] || toolName
   return (
-    <details className="at-tool">
-      <summary>
-        <span className={`at-tool-icon ${done ? 'done' : ''}`}>{done ? <Check size={13} /> : <Wrench size={13} />}</span>
-        <span className="at-tool-name">{label}</span>
-        <span className="at-tool-status">{done ? '完成' : '执行中…'}</span>
-      </summary>
-      {argsText && argsText !== '{}' && (
-        <pre className="at-tool-pre">{argsText}</pre>
-      )}
-    </details>
+    <div className="at-tool-wrap">
+      <details className="at-tool">
+        <summary>
+          <span className={`at-tool-icon ${done ? 'done' : ''}`}>{done ? <Check size={13} /> : <Wrench size={13} />}</span>
+          <span className="at-tool-name">{label}</span>
+          <span className="at-tool-status">{done ? '完成' : '执行中…'}</span>
+        </summary>
+        {argsText && argsText !== '{}' && (
+          <pre className="at-tool-pre">{argsText}</pre>
+        )}
+      </details>
+      <ToolMedia result={result} />
+    </div>
   )
 }
 
@@ -78,7 +144,9 @@ type Props = {
 }
 
 export default function AgentThread({ placeholder, suggestions = [], emptyTitle, emptyHint, centered, modelLabel = '全能 Agent' }: Props) {
+  const [lightbox, setLightbox] = useState<string | null>(null)
   return (
+    <LightboxContext.Provider value={setLightbox}>
     <ThreadPrimitive.Root className={`at-root ${centered ? 'centered' : ''}`}>
       <ThreadPrimitive.Viewport className="at-viewport">
         <ThreadPrimitive.Empty>
@@ -128,5 +196,18 @@ export default function AgentThread({ placeholder, suggestions = [], emptyTitle,
         </div>
       </ComposerPrimitive.Root>
     </ThreadPrimitive.Root>
+
+    {lightbox && (
+      <div className="tp-lightbox" onClick={() => setLightbox(null)}>
+        <button className="tp-lightbox-close" aria-label="关闭">
+          <X size={22} />
+        </button>
+        <img src={lightbox} alt="" onClick={(e) => e.stopPropagation()} />
+        <a className="tp-btn tp-btn-ghost tp-lightbox-dl" href={lightbox} download onClick={(e) => e.stopPropagation()}>
+          <Download size={15} /> 下载
+        </a>
+      </div>
+    )}
+    </LightboxContext.Provider>
   )
 }
