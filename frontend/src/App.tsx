@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import ChatInterface from './components/ChatInterface'
-import SettingsPage from './components/SettingsPage'
 import { NavProvider, type TrainingView } from './training/nav'
+import SettingsStudio from './training/SettingsStudio'
 import TrainingHome from './training/TrainingHome'
 import ImageStudio from './training/ImageStudio'
 import Model3DStudio from './training/Model3DStudio'
@@ -80,14 +80,6 @@ function App() {
     window.dispatchEvent(new PopStateEvent('popstate'))
   }
 
-  if (page === 'settings') {
-    return (
-      <div className="app">
-        <SettingsPage theme={theme} onToggleTheme={toggleTheme} />
-      </div>
-    )
-  }
-
   // 经典完整画布（保留可达，通过 canvasId 链接进入）
   if (canvasId) {
     return (
@@ -98,6 +90,8 @@ function App() {
   }
 
   const activeView = (VALID_VIEWS.includes(view as TrainingView) ? view : 'home') as TrainingView
+
+  const isSettings = page === 'settings'
 
   const renderStudio = () => {
     switch (activeView) {
@@ -128,7 +122,7 @@ function App() {
             openSettings,
           }}
         >
-          {renderStudio()}
+          {isSettings ? <SettingsStudio /> : renderStudio()}
         </NavProvider>
       </div>
     </div>
