@@ -108,6 +108,12 @@ export function useAgentRuntime(options: AgentRuntimeOptions) {
           else parts.push({ type: 'text', text: delta })
         }
 
+        const appendReasoning = (delta: string) => {
+          const last = parts[parts.length - 1]
+          if (last && last.type === 'reasoning') last.text += delta
+          else parts.push({ type: 'reasoning', text: delta })
+        }
+
         while (true) {
           const { done, value } = await reader.read()
           if (done) break
@@ -123,6 +129,12 @@ export function useAgentRuntime(options: AgentRuntimeOptions) {
             if (!event) continue
 
             switch (event.type) {
+              case 'reasoning':
+                if (event.content) {
+                  appendReasoning(event.content)
+                  yield snapshot()
+                }
+                break
               case 'delta':
                 if (event.content) {
                   appendText(event.content)

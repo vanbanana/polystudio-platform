@@ -6,7 +6,10 @@ import { useThreadScoped } from './threadScope'
 import StudioLayout from './StudioLayout'
 import AgentThread from './AgentThread'
 import VideoEditorPanel from './VideoEditorPanel'
+import { AGENT_BY_VIEW } from './nav'
 import './studio.css'
+
+const AGENT = AGENT_BY_VIEW.video
 
 const SUGGESTIONS = [
   '海浪拍打沙滩，夕阳西下，镜头缓慢推进',
@@ -58,6 +61,9 @@ export default function VideoStudio() {
           emptyTitle="描述你的镜头"
           emptyHint="视频生成耗时较长（约 1-3 分钟），左侧会实时显示 Agent 的工具调用过程。"
           modelLabel="视频生成 · Agent"
+          agentName={AGENT.name}
+          agentIcon={AGENT.icon}
+          agentColor={AGENT.color}
         />
       </StudioLayout>
     </AssistantRuntimeProvider>

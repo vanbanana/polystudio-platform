@@ -3,7 +3,10 @@ import { MessageSquare } from 'lucide-react'
 import { useAgentRuntime } from './agentRuntime'
 import StudioLayout from './StudioLayout'
 import AgentThread from './AgentThread'
+import { AGENT_BY_VIEW } from './nav'
 import './studio.css'
+
+const AGENT = AGENT_BY_VIEW.chat
 
 const SUGGESTIONS = [
   '用通俗的话解释一下什么是大语言模型',
@@ -25,6 +28,9 @@ export default function ChatStudio() {
           emptyTitle="Qwen3 对话"
           emptyHint="模仿在线 AI 网站的对话界面，背后是同一套全能 Agent。本地化部署后可把云端模型替换为本地 Qwen3。"
           modelLabel="Qwen3 · 本地化"
+          agentName={AGENT.name}
+          agentIcon={AGENT.icon}
+          agentColor={AGENT.color}
         />
       </StudioLayout>
     </AssistantRuntimeProvider>

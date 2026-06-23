@@ -6,7 +6,10 @@ import { useAgentRuntime, type ModelItem } from './agentRuntime'
 import { useThreadScoped } from './threadScope'
 import StudioLayout from './StudioLayout'
 import AgentThread from './AgentThread'
+import { AGENT_BY_VIEW } from './nav'
 import './studio.css'
+
+const AGENT = AGENT_BY_VIEW.model3d
 
 const SUGGESTIONS = [
   '一个卡通风格的小房子，带烟囱和小窗户',
@@ -94,6 +97,9 @@ export default function Model3DStudio() {
           emptyTitle="描述你的模型"
           emptyHint="3D 生成通常需要数十秒，左侧会显示 Agent 的工具执行过程。"
           modelLabel="3D 生成 · Agent"
+          agentName={AGENT.name}
+          agentIcon={AGENT.icon}
+          agentColor={AGENT.color}
         />
       </StudioLayout>
     </AssistantRuntimeProvider>

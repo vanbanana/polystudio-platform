@@ -7,6 +7,7 @@ import logging
 from typing import Optional
 from langchain_openai import ChatOpenAI
 from app.llm.base import BaseLLMProvider
+from app.llm.reasoning_chat import ReasoningChatOpenAI
 
 logger = logging.getLogger(__name__)
 
@@ -55,7 +56,7 @@ class VolcanoLLMProvider(BaseLLMProvider):
             logger.info("💭 Thinking 功能已启用")
         
         # 创建 ChatOpenAI 实例（火山引擎兼容 OpenAI 接口）
-        model = ChatOpenAI(
+        model = ReasoningChatOpenAI(
             model=self.model_name,
             api_key=self.api_key,
             base_url=self.base_url,

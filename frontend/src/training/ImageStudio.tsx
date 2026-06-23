@@ -5,7 +5,10 @@ import { useAgentRuntime, type MediaItem } from './agentRuntime'
 import { useThreadScoped } from './threadScope'
 import StudioLayout from './StudioLayout'
 import AgentThread from './AgentThread'
+import { AGENT_BY_VIEW } from './nav'
 import './studio.css'
+
+const AGENT = AGENT_BY_VIEW.image
 
 const SUGGESTIONS = [
   '一只穿着宇航服的柴犬，漂浮在星空中，电影级光影',
@@ -75,6 +78,9 @@ export default function ImageStudio() {
           emptyTitle="描述你想要的画面"
           emptyHint="Agent 会自动选择图片生成工具。点下方示例快速开始。"
           modelLabel="文生图 · Agent"
+          agentName={AGENT.name}
+          agentIcon={AGENT.icon}
+          agentColor={AGENT.color}
         />
       </StudioLayout>
 

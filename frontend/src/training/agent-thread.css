@@ -116,6 +116,30 @@
 
 .at-msg-assistant {
   flex-direction: column;
+  gap: 8px;
+}
+
+/* Agent 头像 + 名称（每个工作台用各自的图标与配色） */
+.at-msg-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.at-avatar {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  color: var(--at-accent, var(--tp-primary));
+  background: color-mix(in srgb, var(--at-accent, var(--tp-primary)) 16%, transparent);
+  border: 1px solid color-mix(in srgb, var(--at-accent, var(--tp-primary)) 32%, transparent);
+}
+.at-agent-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--tp-text);
 }
 
 .at-content {
@@ -123,6 +147,7 @@
   flex-direction: column;
   gap: 10px;
   max-width: 100%;
+  padding-left: 34px;
 }
 
 .at-md {
@@ -241,6 +266,53 @@
 .at-reasoning-icon {
   flex-shrink: 0;
   color: var(--tp-primary);
+}
+
+/* 深度思考面板（模型 reasoning_content） */
+.at-think {
+  border: 1px solid var(--tp-border);
+  border-radius: var(--tp-radius-sm);
+  background: var(--tp-surface);
+  overflow: hidden;
+}
+.at-think > summary {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 12px;
+  cursor: pointer;
+  list-style: none;
+  font-size: 12.5px;
+  color: var(--tp-text-soft);
+}
+.at-think > summary::-webkit-details-marker {
+  display: none;
+}
+.at-think-icon {
+  flex-shrink: 0;
+  color: var(--tp-primary);
+  animation: at-pulse 1.6s ease-in-out infinite;
+}
+.at-think-title {
+  font-weight: 600;
+  color: var(--tp-text-soft);
+}
+.at-think[open] .at-think-title {
+  color: var(--tp-text);
+}
+.at-think-body {
+  border-top: 1px dashed var(--tp-border);
+  padding: 10px 12px;
+  font-size: 12.5px;
+  line-height: 1.7;
+  color: var(--tp-text-mut);
+  white-space: normal;
+}
+.at-think-body p {
+  margin: 0 0 6px;
+}
+.at-think-body p:last-child {
+  margin-bottom: 0;
 }
 
 /* 工具调用步骤 */

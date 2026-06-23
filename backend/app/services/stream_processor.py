@@ -246,6 +246,19 @@ class StreamProcessor:
             # 处理AI消息
             if isinstance(message_chunk, AIMessageChunk):
                 logger.debug(f"  🤖 AIMessageChunk: content={str(message_chunk.content)[:50] if message_chunk.content else None}")
+
+                # 处理推理内容（reasoning_content）- 模型的"思考过程"，先于正式回答
+                # 由 ReasoningChatOpenAI 注入到 additional_kwargs，逐 chunk 增量下发
+                reasoning_delta = (message_chunk.additional_kwargs or {}).get("reasoning_content")
+                if reasoning_delta:
+                    reasoning_str = str(reasoning_delta)
+                    logger.debug(f"💭 发送 reasoning delta ({len(reasoning_str)} 字符)")
+                    reasoning_event = {
+                        "type": "reasoning",
+                        "content": reasoning_str
+                    }
+                    yield f"data: {json.dumps(reasoning_event, ensure_ascii=False)}\n\n"
+
                 # 处理文本内容 - 立即发送每个 chunk，类似 OpenAI 流式输出
                 # 关键：langgraph 的 AIMessageChunk 已经是增量内容，直接发送
                 content = message_chunk.content
